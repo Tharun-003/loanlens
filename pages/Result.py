@@ -9,7 +9,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 # -------------------------------------------------
-# NOW SAFE TO IMPORT PROJECT MODULES
+# IMPORTS
 # -------------------------------------------------
 import streamlit as st
 
@@ -23,7 +23,6 @@ from logic.explanation_engine import (
     generate_improvement_tips
 )
 
-
 # -------------------------------------------------
 # PAGE CONFIG
 # -------------------------------------------------
@@ -32,27 +31,21 @@ st.set_page_config(page_title="Result", page_icon="📊", layout="centered")
 st.title("📊 Loan Advisory Result")
 
 # -------------------------------------------------
-# 1️⃣ CHECK IF REQUIRED DATA EXISTS
+# SAFETY CHECK: DID USER COMPLETE PREVIOUS STEPS?
 # -------------------------------------------------
-required_keys = [
-    "loan_type", "age", "income", "credit_score",
-    "employment_stability", "existing_loan", "emi_delay"
-]
-
-missing = [k for k in required_keys if k not in st.session_state]
-if missing:
-    st.error("Incomplete data. Please complete previous steps.")
+if not st.session_state.get("data_complete", False):
+    st.error("Please complete all previous steps before viewing results.")
     st.stop()
 
 # -------------------------------------------------
-# 2️⃣ BUILD USER PROFILE
+# BUILD USER PROFILE (READ-ONLY)
 # -------------------------------------------------
 user_profile = {
     "loan_type": st.session_state.get("loan_type"),
     "age": st.session_state.get("age"),
     "income": st.session_state.get("income"),
     "credit_score": st.session_state.get("credit_score"),
-    "employment_stability": st.session_state.get("employment_stability"),
+    "employment_stability": st.session_state.get("employment_stability", "Medium"),
     "existing_loan": st.session_state.get("existing_loan"),
     "emi_delay": st.session_state.get("emi_delay"),
     "coapplicant": st.session_state.get("coapplicant", "No"),
@@ -115,9 +108,7 @@ else:
     else:
         for loan in recommended_loans:
             with st.container(border=True):
-                st.markdown(
-                    f"### {loan['bank_name']} — {loan['loan_name']}"
-                )
+                st.markdown(f"### {loan['bank_name']} — {loan['loan_name']}")
                 explanation = generate_bank_match_explanation(loan, user_profile)
                 st.caption(explanation)
 
