@@ -1,7 +1,7 @@
 import pandas as pd
 
 # -----------------------------
-# Helper: risk ordering
+# Helper: risk ordering for advisory logic
 # -----------------------------
 RISK_ORDER = {
     "Low": 1,
@@ -9,51 +9,53 @@ RISK_ORDER = {
     "High": 3
 }
 
-
 def recommend_loans(
     user_profile: dict,
     user_risk: str,
-    dataset_path: str = "data/bank_loan_master.csv",
+    dataset_path: str = "../data/bank_loan_master.csv",
     top_n: int = 3
 ):
     """
-    Suggest suitable loans strictly from dataset for awareness purposes.
-
-    NOTE:
-    - This does NOT approve or reject loans
-    - This only checks dataset criteria for suitability display
+    Suggests suitable bank products by matching user profiles against bank criteria.
     """
+    try:
+        df = pd.read_csv(dataset_path)
+    except FileNotFoundError:
+        return []
 
-    df = pd.read_csv(dataset_path)
-
-    # Normalize text columns
+    # Normalize text columns for accurate matching
     df["loan_type"] = df["loan_type"].str.capitalize()
     df["risk_tolerance"] = df["risk_tolerance"].str.capitalize()
 
     recommendations = []
 
+    # Get user values using the specific keys used in training
+    u_income = user_profile.get("income_annum", 0)
+    u_cibil = user_profile.get("cibil_score", 0)
+    u_loan_type = user_profile.get("loan_type", "").capitalize()
+
     for _, row in df.iterrows():
 
         # 1️⃣ Loan type match
-        if row["loan_type"] != user_profile["loan_type"]:
+        if row["loan_type"] != u_loan_type:
             continue
 
-        # 2️⃣ Age awareness check (dataset criteria)
-        if user_profile["age"] < row["min_age"]:
+        # 2️⃣ Credit score awareness check (Matching CIBIL standards)
+        if u_cibil < row["min_credit_score"]:
             continue
 
-        # 3️⃣ Credit score awareness check (NUMERIC)
-        if user_profile["credit_score"] < row["min_credit_score"]:
+        # 3️⃣ Income awareness check (Matching Annual Income)
+        if u_income < row["min_income"]:
             continue
 
-        # 4️⃣ Income awareness check
-        if user_profile["income"] < row["min_income"]:
-            continue
+        # 4️⃣ Risk suitability advisory
+        # Compares model-predicted risk against the bank's risk tolerance
+        u_risk_val = RISK_ORDER.get(user_risk, 3)
+        b_risk_val = RISK_ORDER.get(row["risk_tolerance"], 2)
 
-        # 5️⃣ Risk suitability (advisory, not approval)
-        if RISK_ORDER[user_risk] > RISK_ORDER[row["risk_tolerance"]]:
+        if u_risk_val > b_risk_val:
             suitability = "Risky"
-        elif RISK_ORDER[user_risk] < RISK_ORDER[row["risk_tolerance"]]:
+        elif u_risk_val < b_risk_val:
             suitability = "Safer"
         else:
             suitability = "Moderate"
@@ -61,17 +63,15 @@ def recommend_loans(
         recommendations.append({
             "bank_name": row["bank_name"],
             "loan_name": row["loan_name"],
-            "loan_type": row["loan_type"],
             "interest_rate": row["interest_rate"],
-            "tenure_range": row["tenure_range"],
-            "min_income": row["min_income"],
-            "min_credit_score": row["min_credit_score"],
-            "risk_tolerance": row["risk_tolerance"],
             "suitability": suitability,
             "explanation": (
-                "This loan is shown because your details align with the dataset’s "
-                "basic income and credit score criteria."
+                f"Matched with {row['bank_name']} based on your income and "
+                f"CIBIL score of {u_cibil}."
             )
         })
 
+    # Sort by interest rate (lowest first) before returning top N
+    recommendations = sorted(recommendations, key=lambda x: x['interest_rate'])
+    
     return recommendations[:top_n]

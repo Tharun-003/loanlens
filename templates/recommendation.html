@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Recommendation | LoanLens</title>
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <!-- Glass Recommendation Card -->
+    <div class="container glass-heavy">
+        <h1>Loan Recommendation</h1>
+        <p>Here’s an overview based on your financial inputs</p>
+
+        <!-- Risk Level -->
+        <div class="risk medium">
+            Medium Risk
+        </div>
+
+        <!-- Recommendation Summary -->
+        <ul>
+            <li>✔ Your income is sufficient for the requested loan amount</li>
+            <li>✔ Credit score is within an acceptable range</li>
+            <li>⚠ Existing loan increases repayment responsibility</li>
+        </ul>
+
+        <!-- Interest Comparison -->
+        <ul>
+            <li>📉 Existing Loan Interest: ₹1,80,000 (approx)</li>
+            <li>📈 New Loan Interest: ₹1,45,000 (approx)</li>
+            <li>💡 Switching to the new loan may save ~19%</li>
+        </ul>
+
+        <!-- Action -->
+        <a href="/result">View Final Analysis</a>
+    </div>
+
+</body>
+</html>

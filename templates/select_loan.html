@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Loan | LoanLens</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Select Loan Type</h1>
+        <p>Choose the type of loan you want to analyze</p>
+
+        <form action="/personal-details" method="get">
+            <button type="submit" name="loan_type" value="Home Loan">
+                🏠 Home Loan
+            </button>
+
+            <button type="submit" name="loan_type" value="Education Loan">
+                🎓 Education Loan
+            </button>
+
+            <button type="submit" name="loan_type" value="Personal Loan">
+                💳 Personal Loan
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

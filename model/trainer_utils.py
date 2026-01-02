@@ -30,6 +30,7 @@ def evaluate_and_train(model, X, y, nfolds=5):
     Uses K-Fold Cross-Validation to ensure the model generalizes well.
     """
     kf = KFold(n_splits=nfolds, shuffle=True, random_state=42)
+    
     # Using cross_val_score to get a realistic accuracy estimate
     cv_scores = cross_val_score(model, X, y, cv=kf)
     
@@ -37,14 +38,15 @@ def evaluate_and_train(model, X, y, nfolds=5):
     print(f"Average Accuracy: {np.mean(cv_scores):.2%}")
     print(f"Score Variance: {np.std(cv_scores):.4f}")
     
-    # Train the final version of the model on all provided data
+    # Fit the final model on the training data provided
     model.fit(X, y)
     return model
 
 def print_detailed_eval(model, X_test, y_test):
     """
-    Prints precision and recall to identify if the model is biased.
+    Prints precision, recall, and F1-score to check for model bias.
     """
     y_pred = model.predict(X_test)
     print("\n--- Detailed Classification Report ---")
+    # This report is crucial for seeing if accuracy is "fake" or real
     print(classification_report(y_test, y_pred))
