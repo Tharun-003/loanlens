@@ -2,36 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login | LoanLens</title>
-
-    <!-- Main Styles -->
+    <title>Login | FinSense</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
 
-    <!-- Glass Login Card -->
-    <div class="container glass-heavy">
-        <h1>LoanLens</h1>
-        <p>Your AI-powered loan advisory system</p>
+<div class="container glass-heavy">
+    <h1>FinSense</h1>
+    <p>AI-powered Loan Awareness & Advisory System</p>
 
-        <form action="/select-loan" method="get">
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                required
-            >
-
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                required
-            >
-
-            <button type="submit">Enter</button>
-        </form>
-    </div>
+    <form method="post">
+        <input type="text" placeholder="Username" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit">Enter</button>
+    </form>
+</div>
 
 </body>
 </html>

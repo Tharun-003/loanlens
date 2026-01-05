@@ -2,60 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Existing Loan Details | LoanLens</title>
-
-    <!-- Main Styles -->
+    <title>Existing Loan Details | FinSense</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
 
-    <!-- Glass Card -->
-    <div class="container glass-heavy">
-        <h1>Existing Loan Details</h1>
-        <p>Do you currently have any active loan?</p>
+<div class="container glass-heavy">
+    <h1>Existing Loan Awareness</h1>
+    <p>Do you currently have any active loan?</p>
 
-        <form action="/recommendation" method="post">
+    <form method="post">
+        <select name="has_existing" required>
+            <option value="" disabled selected>Select an option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
 
-            <select name="has_existing_loan" required>
-                <option value="" disabled selected>Select an option</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
+        <input type="number" name="pending_amount" placeholder="Pending Loan Amount (₹)">
+        <input type="number" step="0.01" name="existing_interest_rate" placeholder="Interest Rate (%)">
+        <input type="number" name="remaining_tenure" placeholder="Remaining Tenure (Years)">
 
-            <input
-                type="text"
-                name="existing_loan_type"
-                placeholder="Existing Loan Type (if any)"
-            >
-
-            <input
-                type="number"
-                name="existing_loan_amount"
-                placeholder="Original Loan Amount (₹)"
-            >
-
-            <input
-                type="number"
-                step="0.01"
-                name="existing_interest_rate"
-                placeholder="Interest Rate (%)"
-            >
-
-            <input
-                type="number"
-                name="pending_amount"
-                placeholder="Pending Amount (₹)"
-            >
-
-            <input
-                type="number"
-                name="remaining_tenure"
-                placeholder="Remaining Tenure (Years)"
-            >
-
-            <button type="submit">Analyze Loan</button>
-        </form>
-    </div>
+        <button type="submit">Continue</button>
+    </form>
+</div>
 
 </body>
 </html>

@@ -1,6 +1,27 @@
-/* ===============================
-   GLOBAL THEME
-   =============================== */
+/* ======================================================
+   LOANLENS – CYBERPUNK GLASS DARK BLUE THEME
+   ====================================================== */
+
+:root {
+    --bg-primary: #0a0a15;
+    --bg-secondary: #0f1419;
+
+    --accent-blue: #4f8cff;
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #00eaff;
+
+    --text-primary: #eef0ff;
+    --text-secondary: #b6c2ff;
+    --text-muted: #6b7bbf;
+
+    --glass-bg: rgba(15, 20, 40, 0.65);
+    --glass-border: rgba(139, 92, 246, 0.35);
+    --glass-shadow: rgba(79, 140, 255, 0.35);
+}
+
+/* ======================================================
+   BASE RESET
+   ====================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -8,72 +29,72 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ======================================================
+   BODY + BACKGROUND
+   ====================================================== */
 body {
-    height: 100vh;
+    min-height: 100vh;
     background:
-        radial-gradient(circle at 20% 20%, #8b5cf6 0%, transparent 40%),
-        radial-gradient(circle at 80% 80%, #60a5fa 0%, transparent 45%),
-        radial-gradient(circle at 30% 20%, #6a4c93 0%, #3b3b98 40%, #1b1b3a 75%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #eef0ff;
+        radial-gradient(circle at 20% 20%, #1b1b3a, transparent 40%),
+        radial-gradient(circle at 80% 80%, #312e81, transparent 45%),
+        linear-gradient(180deg, var(--bg-primary), #070710);
+    color: var(--text-primary);
 }
 
-/* ===============================
-   MAIN CONTAINER (GLASS CARD)
-   =============================== */
+/* ======================================================
+   CONTAINERS
+   ====================================================== */
 .container {
-    width: 420px;
-    padding: 34px 32px;
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 40px 20px;
+}
 
+.glass {
+    padding: 34px 32px;
     background: linear-gradient(
         135deg,
         rgba(255, 255, 255, 0.12),
-        rgba(255, 255, 255, 0.02)
+        rgba(255, 255, 255, 0.03)
     );
-
     backdrop-filter: blur(22px) saturate(160%);
-    -webkit-backdrop-filter: blur(22px) saturate(160%);
-
     border-radius: 26px;
-
-    border: 1px solid rgba(255, 255, 255, 0.18);
-
+    border: 1px solid var(--glass-border);
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.35),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-
+        0 30px 80px rgba(0, 0, 0, 0.5),
+        0 0 30px var(--glass-shadow);
     animation: fadeInUp 0.8s ease;
+    margin-bottom: 30px;
 }
 
+/* EXTRA HEAVY GLASS (RESULT PAGE) */
 .glass-heavy {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(20, 20, 50, 0.75);
     backdrop-filter: blur(30px) saturate(180%);
 }
 
-/* ===============================
+/* ======================================================
    HEADINGS & TEXT
-   =============================== */
+   ====================================================== */
 h1, h2 {
     text-align: center;
     margin-bottom: 18px;
-    color: #eef0ff;
     font-weight: 600;
-    letter-spacing: 0.4px;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
 }
 
 p {
     text-align: center;
     margin-bottom: 22px;
-    color: #d6dbff;
     font-size: 14px;
-    opacity: 0.85;
+    color: var(--text-secondary);
 }
 
-/* ===============================
+/* ======================================================
    FORMS
-   =============================== */
+   ====================================================== */
 form {
     display: flex;
     flex-direction: column;
@@ -81,175 +102,148 @@ form {
 }
 
 input, select {
-    width: 100%;
     padding: 14px 16px;
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    outline: none;
-
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-
-    color: #eef0ff;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    background: rgba(10, 10, 30, 0.6);
+    color: var(--text-primary);
     font-size: 14px;
+    transition: all 0.25s ease;
+}
 
-    transition: border 0.2s ease, background 0.2s ease;
+input::placeholder {
+    color: var(--text-muted);
 }
 
 input:focus, select:focus {
-    border: 1px solid rgba(139, 92, 246, 0.6);
-    background: rgba(255, 255, 255, 0.12);
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.35);
 }
 
-
-input::placeholder {
-    color: #c7c9ff;
-    opacity: 0.7;
-}
-
-select {
-    cursor: pointer;
-}
-
-/* ===============================
+/* ======================================================
    BUTTONS
-   =============================== */
+   ====================================================== */
 button {
-    width: 100%;
-    padding: 14px;
     margin-top: 18px;
-
-    border-radius: 16px;
+    padding: 14px;
+    border-radius: 18px;
     border: none;
-
-    background: linear-gradient(135deg, #7aa2ff, #5c7cff);
-    color: #0f1020;
-
+    background: linear-gradient(
+        135deg,
+        var(--accent-purple),
+        var(--accent-blue)
+    );
+    color: #0b0b20;
     font-weight: 600;
-    font-size: 14px;
     cursor: pointer;
-
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:
+        0 10px 30px rgba(139, 92, 246, 0.45),
+        0 0 15px rgba(79, 140, 255, 0.4);
+    transition: all 0.25s ease;
 }
 
 button:hover {
     transform: translateY(-2px) scale(1.02);
     box-shadow:
-        0 12px 30px rgba(122, 162, 255, 0.45),
-        0 0 18px rgba(139, 92, 246, 0.4);
+        0 15px 40px rgba(139, 92, 246, 0.65),
+        0 0 20px rgba(0, 234, 255, 0.6);
 }
 
-/* ===============================
-   LOAN TYPE BUTTONS
-   =============================== */
-form button[name="loan_type"] {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: #ffffff;
+/* ======================================================
+   RISK BADGES
+   ====================================================== */
+.risk {
+    text-align: center;
+    padding: 12px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
-form button[name="loan_type"]:hover {
-    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.7);
+.risk.low {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    border: 1px solid #22c55e;
 }
 
-/* ===============================
-   RESULT PAGE LIST
-   =============================== */
+.risk.medium {
+    background: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    border: 1px solid #eab308;
+}
+
+.risk.high {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid #ef4444;
+}
+
+/* ======================================================
+   LISTS
+   ====================================================== */
 ul {
     list-style: none;
     margin-top: 15px;
 }
 
 li {
-    background: rgba(15, 23, 42, 0.9);
     padding: 14px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 10px;
-
-    border-left: 4px solid #818cf8;
-    color: #e5e7eb;
+    background: rgba(15, 20, 45, 0.7);
+    border-left: 4px solid var(--accent-blue);
     font-size: 14px;
 }
 
-/* ===============================
+/* ======================================================
+   LOAN CARDS
+   ====================================================== */
+.loan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.loan-card {
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(20, 20, 55, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow:
+        0 10px 30px rgba(79, 140, 255, 0.35),
+        0 0 15px rgba(0, 234, 255, 0.3);
+}
+
+.loan-card h3 {
+    color: var(--accent-cyan);
+    margin-bottom: 10px;
+}
+
+/* ======================================================
    LINKS
-   =============================== */
+   ====================================================== */
 a {
     display: block;
-    margin-top: 20px;
+    margin-top: 22px;
     text-align: center;
+    color: var(--accent-cyan);
     text-decoration: none;
-    color: #93c5fd;
     font-size: 14px;
 }
 
 a:hover {
-    text-decoration: underline;
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.6);
 }
 
-/* ===============================
-   RISK LEVEL STYLES
-   =============================== */
-.risk {
-    text-align: center;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    font-weight: 600;
-}
-
-.risk.low {
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
-    border: 1px solid #22c55e;
-}
-
-.risk.medium {
-    background: rgba(234, 179, 8, 0.15);
-    color: #facc15;
-    border: 1px solid #eab308;
-}
-
-.risk.high {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-    border: 1px solid #ef4444;
-}
-
-/* ===============================
-   LOADING ANIMATION
-   =============================== */
-.loading {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.hidden {
-    display: none;
-}
-
-.spinner {
-    width: 45px;
-    height: 45px;
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-top: 4px solid #818cf8;
-    border-radius: 50%;
-    margin: 0 auto 12px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* ===============================
-   FADE-IN ANIMATION
-   =============================== */
+/* ======================================================
+   ANIMATION
+   ====================================================== */
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(25px);
     }
     to {
         opacity: 1;
@@ -257,11 +251,11 @@ a:hover {
     }
 }
 
-/* ===============================
+/* ======================================================
    RESPONSIVE
-   =============================== */
+   ====================================================== */
 @media (max-width: 480px) {
     .container {
-        width: 90%;
+        padding: 20px 12px;
     }
 }

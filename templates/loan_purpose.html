@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Suggested Loan Type | FinSense</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="container glass-heavy">
+    <h1>Suggested Loan Type</h1>
+    < <p>Based on your selection, the following loan type is recommended</p>
+
+    <form method="post">
+        <input type="hidden" name="loan_type" value="{{ session.loan_type }}">
+        <div class="risk low">{{ session.loan_type }}</div>
+        <p>This loan type best matches your selected purpose.</p>
+        <button type="submit">Continue</button>
+    </form>
+</div>
+
+</body>
+</html>

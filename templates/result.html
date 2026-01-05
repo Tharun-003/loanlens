@@ -1,56 +1,56 @@
-<div class="container glass-heavy">
-    <h1>Final Loan Analysis</h1>
-    
-    <div class="risk {{ risk_level|lower }}">
-        {{ risk_level }} Risk Profile
-    </div>
-    <p style="text-align: center; color: #64748b;">{{ risk_explanation }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Assessment | FinSense</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
 
-    {% if pending_interest %}
-    <div class="section-card" style="border-left: 5px solid #f39c12; background: #fff9f0;">
-        <h3 style="color: #d35400;">⏳ Risk-Adjusted Pending Interest</h3>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <small>Total Interest Owed</small>
-                <h2 style="margin:0;">₹{{ pending_interest.pending_interest }}</h2>
-            </div>
-            <div style="text-align: right;">
-                <small>Adjusted Rate</small><br>
-                <strong>{{ pending_interest.adjusted_rate }}</strong>
-            </div>
-        </div>
-        <p style="font-size: 0.8rem; margin-top: 10px; color: #b45309;">
-            ※ Penalty applied due to {{ risk_level }} risk assessment.
-        </p>
+<div class="container glass-heavy">
+
+    <h1>Your Financial Assessment</h1>
+
+    <div class="risk {{ risk|lower }}">
+        {{ risk }} Risk Profile | Score: {{ risk_score }}/100
     </div>
+
+    <p>{{ advisory }}</p>
+
+    <ul>
+        {% for reason in rule_reasons %}
+        <li>✔ {{ reason }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Existing Loan Awareness</h2>
+    {% if pending_interest %}
+    <ul>
+        <li>Pending Amount: ₹{{ session.pending_amount }}</li>
+        <li>Approx Pending Interest: ₹{{ pending_interest.pending_interest }}</li>
+    </ul>
+    {% else %}
+    <p>No existing loan obligations</p>
     {% endif %}
 
-    <div class="section-card">
-        <h3>🏆 Best Bank Matches</h3>
-        {% if loans %}
-            {% for loan in loans %}
-            <div class="loan-item" style="padding: 15px; border-bottom: 1px solid #e2e8f0;">
-                <div style="display: flex; justify-content: space-between;">
-                    <strong>{{ loan.bank_name }}</strong>
-                    <span style="color: #2e7d32; font-weight: bold;">{{ loan.interest_rate }}%</span>
-                </div>
-                <small>Suitability: {{ loan.suitability }}</small>
-                {% if loop.first %}<span class="badge" style="background:#1e3a8a; color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem;">TOP PICK</span>{% endif %}
-            </div>
-            {% endfor %}
-        {% else %}
-            <p>No eligible banks found in our current database.</p>
-        {% endif %}
-    </div>
+    <h2>Recommended Loan Options</h2>
 
-    <div class="section-card">
-        <h3>✅ Advisory: {{ advisory }}</h3>
-        <ul style="font-size: 0.9rem; color: #475569;">
-            {% for reason in rule_reasons %}
-                <li>{{ reason }}</li>
-            {% endfor %}
+    {% for loan in loans %}
+    <div class="loan-card">
+        <h3>{{ loan.loan_name }}</h3>
+        <p>{{ loan.bank }}</p>
+        <ul>
+            <li>Interest Rate: {{ loan.interest_rate }}</li>
+            <li>Tenure: {{ loan.tenure }}</li>
+            <li>Max Amount: ₹{{ loan.max_amount }}</li>
         </ul>
+        <p>{{ loan.reason }}</p>
     </div>
+    {% endfor %}
 
-    <a href="/" class="btn-primary" style="display:block; text-align:center; text-decoration:none;">New Assessment</a>
+    <a href="/">Start New Analysis</a>
+
 </div>
+
+</body>
+</html>

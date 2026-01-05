@@ -2,76 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Personal Details | LoanLens</title>
-
-    <!-- Main Styles -->
+    <title>Financial & Loan Details | FinSense</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
 
-    <!-- Glass Card -->
-    <div class="container">
-        <h1>Personal & Financial Details</h1>
-        <p>Tell us a bit about your financial profile</p>
+<div class="container glass-heavy">
+    <h1>Financial & Loan Details</h1>
+    <p>Provide your financial profile and planned loan details</p>
 
-        <form action="/existing-loan" method="post">
-
-            <input
-                type="number"
-                name="age"
-                placeholder="Age"
-                min="18"
-                required
-            >
-
-            <input
-                type="number"
-                name="monthly_income"
-                placeholder="Monthly Income (₹)"
-                required
-            >
-
-            <input
-                type="number"
-                name="monthly_expenses"
-                placeholder="Monthly Expenses (₹)"
-                required
-            >
-
-            <select name="employment_type" required>
-                <option value="" disabled selected>Employment Type</option>
-                <option value="Student">Student</option>
-                <option value="Salaried">Salaried</option>
-                <option value="Self-Employed">Self-Employed</option>
-            </select>
-
-            <input
-                type="number"
-                name="credit_score"
-                placeholder="Credit Score"
-                min="300"
-                max="900"
-                required
-            >
-
-            <input
-                type="number"
-                name="loan_amount"
-                placeholder="Loan Amount Required (₹)"
-                required
-            >
-
-            <input
-                type="number"
-                name="loan_tenure"
-                placeholder="Loan Tenure (Years)"
-                min="1"
-                required
-            >
-
-            <button type="submit">Continue</button>
-        </form>
+    <div class="risk low">
+        Selected Loan Type: {{ session.loan_type }}
     </div>
+
+    <form method="post">
+        <input type="number" name="income" placeholder="Monthly Income (₹)" required>
+
+        <input type="number" name="credit_score" placeholder="Credit Score (300–900)" min="300" max="900" required>
+
+        <select name="employment_type" required>
+            <option value="" disabled selected>Employment Type</option>
+            <option value="Student">Student</option>
+            <option value="Salaried">Salaried</option>
+            <option value="Self-Employed">Self-Employed</option>
+        </select>
+
+        <input type="number" name="new_loan_amount" placeholder="Planned Loan Amount (₹)" required>
+
+        <input type="number" name="new_loan_tenure" placeholder="Planned Loan Tenure (Years)" min="1" max="30" required>
+
+        <button type="submit">Continue</button>
+    </form>
+</div>
 
 </body>
 </html>

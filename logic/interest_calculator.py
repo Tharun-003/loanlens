@@ -1,22 +1,38 @@
-def calculate_pending_interest(principal, annual_rate, total_months, risk_level):
-    # 1. Risk-Adjusted Rate Logic
-    # Add a penalty for higher risk profiles
-    risk_penalty = 0
+def calculate_pending_interest(principal, annual_rate, total_months, risk_level=None):
+    """
+    Calculates remaining interest on an existing loan
+    using risk-adjusted reducing balance logic.
+    """
+
+    # Safety checks
+    if principal <= 0 or annual_rate <= 0 or total_months <= 0:
+        return {
+            "pending_interest": 0.0,
+            "adjusted_rate": annual_rate,
+            "months_remaining": total_months
+        }
+
+    # Risk penalty
+    risk_penalty = 0.0
     if risk_level == "Medium":
-        risk_penalty = 1.5  # +1.5% interest
+        risk_penalty = 1.5
     elif risk_level == "High":
-        risk_penalty = 3.5  # +3.5% interest
+        risk_penalty = 3.5
 
     adjusted_rate = annual_rate + risk_penalty
-    
-    # 2. Simple Interest Calculation for remaining period
-    # Formula: I = (P * R * T) / 100
-    # T is in years, so divide months by 12
-    time_years = total_months / 12
-    interest_amount = (principal * adjusted_rate * time_years) / 100
+    monthly_rate = adjusted_rate / 12 / 100
+
+    balance = principal
+    principal_payment = principal / total_months
+    total_interest = 0.0
+
+    for _ in range(total_months):
+        interest = balance * monthly_rate
+        total_interest += interest
+        balance -= principal_payment
 
     return {
-        "pending_interest": round(interest_amount, 2),
-        "adjusted_rate": f"{adjusted_rate}%",
+        "pending_interest": round(total_interest, 2),
+        "adjusted_rate": round(adjusted_rate, 2),
         "months_remaining": total_months
     }

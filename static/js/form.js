@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", () => {
             const loader = form.querySelector(".loading");
             if (loader) {
-                loader.classList.remove("hidden");
+                loader.style.display = "flex";
             }
         });
     });

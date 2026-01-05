@@ -1,77 +1,120 @@
+import os
 import pandas as pd
 
-# -----------------------------
-# Helper: risk ordering for advisory logic
-# -----------------------------
-RISK_ORDER = {
-    "Low": 1,
-    "Medium": 2,
-    "High": 3
+# =========================================================
+# PROJECT ROOT (FinSense/)
+# =========================================================
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# =========================================================
+# DATASET MAPPING
+# =========================================================
+DATASETS = {
+    "Home Loan": "final_home_loan.csv",
+    "Personal Loan": "final_personal_loan.csv",
+    "Education Loan": "final_education_loans.csv",
 }
 
-def recommend_loans(
-    user_profile: dict,
-    user_risk: str,
-    dataset_path: str = "../data/bank_loan_master.csv",
-    top_n: int = 3
-):
+# =========================================================
+# MAX NUMBER OF SUGGESTIONS
+# =========================================================
+MAX_SUGGESTIONS = 3
+
+
+def recommend_loans(user_profile, risk_level):
     """
-    Suggests suitable bank products by matching user profiles against bank criteria.
+    Recommend loans from CSV datasets for awareness.
+    Never rejects completely – uses suitability labels instead.
     """
-    try:
-        df = pd.read_csv(dataset_path)
-    except FileNotFoundError:
+
+    loan_type = user_profile.get("loan_type")
+    credit_score = int(user_profile.get("credit_score", 0))
+    requested_amount = int(user_profile.get("new_loan_amount", 0))
+
+    # -----------------------------------------------------
+    # Validate loan type
+    # -----------------------------------------------------
+    if loan_type not in DATASETS:
         return []
 
-    # Normalize text columns for accurate matching
-    df["loan_type"] = df["loan_type"].str.capitalize()
-    df["risk_tolerance"] = df["risk_tolerance"].str.capitalize()
+    # -----------------------------------------------------
+    # Resolve dataset path
+    # -----------------------------------------------------
+    csv_path = os.path.join(PROJECT_ROOT, DATASETS[loan_type])
+
+    if not os.path.exists(csv_path):
+        print(f"[ERROR] Dataset not found: {csv_path}")
+        return []
+
+    # -----------------------------------------------------
+    # Load dataset
+    # -----------------------------------------------------
+    df = pd.read_csv(csv_path)
+
+    if df.empty:
+        return []
+
+    # Normalize column names
+    df.columns = df.columns.str.lower().str.strip()
+
+    # -----------------------------------------------------
+    # Helper functions
+    # -----------------------------------------------------
+    def pick(row, keys, default=None):
+        for k in keys:
+            if k in row and pd.notna(row[k]):
+                return row[k]
+        return default
+
+    def to_int(val, default=0):
+        try:
+            return int(float(val))
+        except Exception:
+            return default
+
+    # Column name flexibility
+    min_credit_keys = ["min_credit", "min_credit_score", "cibil_score"]
+    max_amount_keys = ["max_amount", "max_loan_amount", "loan_amount"]
+    loan_name_keys = ["loan_name", "product_name"]
+    bank_keys = ["bank", "bank_name", "lender"]
+    interest_keys = ["interest_rate", "rate"]
+    tenure_keys = ["tenure", "loan_tenure", "loan_term"]
 
     recommendations = []
 
-    # Get user values using the specific keys used in training
-    u_income = user_profile.get("income_annum", 0)
-    u_cibil = user_profile.get("cibil_score", 0)
-    u_loan_type = user_profile.get("loan_type", "").capitalize()
-
+    # -----------------------------------------------------
+    # Build recommendations (AWARENESS MODE)
+    # -----------------------------------------------------
     for _, row in df.iterrows():
+        min_credit = to_int(pick(row, min_credit_keys), 0)
+        max_amount = to_int(pick(row, max_amount_keys), 0)
 
-        # 1️⃣ Loan type match
-        if row["loan_type"] != u_loan_type:
-            continue
-
-        # 2️⃣ Credit score awareness check (Matching CIBIL standards)
-        if u_cibil < row["min_credit_score"]:
-            continue
-
-        # 3️⃣ Income awareness check (Matching Annual Income)
-        if u_income < row["min_income"]:
-            continue
-
-        # 4️⃣ Risk suitability advisory
-        # Compares model-predicted risk against the bank's risk tolerance
-        u_risk_val = RISK_ORDER.get(user_risk, 3)
-        b_risk_val = RISK_ORDER.get(row["risk_tolerance"], 2)
-
-        if u_risk_val > b_risk_val:
-            suitability = "Risky"
-        elif u_risk_val < b_risk_val:
-            suitability = "Safer"
+        # ---- Suitability logic (NO REJECTION) ----
+        if credit_score < min_credit:
+            match = "Cautious"
+            reason = (
+                "Shown for awareness only. Eligibility may be limited "
+                "due to low credit score."
+            )
         else:
-            suitability = "Moderate"
+            if max_amount > 0 and requested_amount <= max_amount:
+                match = "Excellent" if risk_level == "Low" else "Good"
+            else:
+                match = "Suitable"
+
+            reason = "Matches your credit profile and planned loan amount."
 
         recommendations.append({
-            "bank_name": row["bank_name"],
-            "loan_name": row["loan_name"],
-            "interest_rate": row["interest_rate"],
-            "suitability": suitability,
-            "explanation": (
-                f"Matched with {row['bank_name']} based on your income and "
-                f"CIBIL score of {u_cibil}."
-            )
+            "loan_name": pick(row, loan_name_keys, "Loan"),
+            "bank": pick(row, bank_keys, "Bank"),
+            "interest_rate": pick(row, interest_keys, "N/A"),
+            "tenure": pick(row, tenure_keys, "N/A"),
+            "max_amount": f"{max_amount:,}" if max_amount > 0 else "N/A",
+            "match": match,
+            "reason": reason
         })
 
-    # Sort by interest rate (lowest first) before returning top N
-    recommendations = sorted(recommendations, key=lambda x: x['interest_rate'])
-    
-    return recommendations[:top_n]
+    # -----------------------------------------------------
+    # Return top N loans
+    # -----------------------------------------------------
+    return recommendations[:MAX_SUGGESTIONS]
