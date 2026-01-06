@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LoanLens | Education Loan Details</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Education Loan Details</h2>
+        <p>
+            Help us understand your academic and financial profile.<br>
+            This ensures accurate eligibility and risk analysis.
+        </p>
+
+        <form action="{{ url_for('education_loan') }}" method="post">
+
+            <!-- Financial Details -->
+            <input
+                type="number"
+                name="loan_amount"
+                placeholder="Loan Amount (₹)"
+                min="0"
+                required
+            >
+
+            <input
+                type="number"
+                name="tenure"
+                placeholder="Loan Tenure (Years)"
+                min="1"
+                required
+            >
+
+            <input
+                type="number"
+                name="guardian_income"
+                placeholder="Guardian / Co-applicant Monthly Income (₹)"
+                min="0"
+                required
+            >
+
+            <!-- Academic Details -->
+            <select name="course_level" required>
+                <option value="" disabled selected>Course Level</option>
+                <option value="UG">Undergraduate (UG)</option>
+                <option value="PG">Postgraduate (PG)</option>
+            </select>
+
+            <select name="course_type" required>
+                <option value="" disabled selected>Course Type</option>
+                <option value="Technical">Technical</option>
+                <option value="Non-Technical">Non-Technical</option>
+            </select>
+
+            <select name="study_country" required>
+                <option value="" disabled selected>Study Country</option>
+                <option value="India">India</option>
+                <option value="Abroad">Abroad</option>
+            </select>
+
+            <input
+                type="text"
+                name="abroad_country"
+                placeholder="If Abroad, Specify Country"
+            >
+
+            <select name="college_tier" required>
+                <option value="" disabled selected>College Tier</option>
+                <option value="Tier 1">Tier 1</option>
+                <option value="Tier 2">Tier 2</option>
+                <option value="Tier 3">Tier 3</option>
+            </select>
+
+            <input
+                type="number"
+                name="study_duration"
+                placeholder="Study Duration (Years)"
+                min="1"
+                required
+            >
+
+            <!-- Loan Features -->
+            <select name="moratorium" required>
+                <option value="" disabled selected>Moratorium Applicable?</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <button type="submit">Continue</button>
+        </form>
+
+        <a href="{{ url_for('loan_purpose') }}">← Back</a>
+    </div>
+
+</body>
+</html>

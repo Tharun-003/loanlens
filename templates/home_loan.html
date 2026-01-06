@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LoanLens | Home Loan Details</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Home Loan Details</h2>
+        <p>
+            Tell us about your property and employment.<br>
+            This helps us evaluate affordability and risk.
+        </p>
+
+        <form action="{{ url_for('home_loan') }}" method="post">
+
+            <!-- Core Financials (USED IN BACKEND) -->
+            <input
+                type="number"
+                name="loan_amount"
+                placeholder="Loan Amount (₹)"
+                min="0"
+                required
+            >
+
+            <input
+                type="number"
+                name="loan_tenure"
+                placeholder="Loan Tenure (Years)"
+                min="1"
+                required
+            >
+
+            <input
+                type="number"
+                name="property_value"
+                placeholder="Property Value (₹)"
+                min="0"
+                required
+            >
+
+            <input
+                type="number"
+                name="down_payment"
+                placeholder="Down Payment Amount (₹)"
+                min="0"
+                required
+            >
+
+            <!-- Employment Details -->
+            <select name="employment_type" required>
+                <option value="" disabled selected>Employment Type</option>
+                <option value="Salaried">Salaried</option>
+                <option value="Self-Employed">Self-Employed</option>
+            </select>
+
+            <select name="job_stability" required>
+                <option value="" disabled selected>Job Stability</option>
+                <option value="Less than 1 year">Less than 1 year</option>
+                <option value="1–3 years">1–3 years</option>
+                <option value="More than 3 years">More than 3 years</option>
+            </select>
+
+            <!-- Property Details -->
+            <select name="property_location" required>
+                <option value="" disabled selected>Property Location Type</option>
+                <option value="Urban">Urban</option>
+                <option value="Semi-Urban">Semi-Urban</option>
+                <option value="Rural">Rural</option>
+            </select>
+
+            <!-- Existing EMIs (optional but realistic) -->
+            <input
+                type="number"
+                name="existing_emi"
+                placeholder="Total Existing Monthly EMIs (₹)"
+                min="0"
+            >
+
+            <button type="submit">Continue</button>
+        </form>
+
+        <a href="{{ url_for('loan_purpose') }}">← Back</a>
+    </div>
+
+</body>
+</html>

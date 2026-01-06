@@ -2,53 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Financial Assessment | FinSense</title>
+    <title>LoanLens | Loan Recommendation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
 
 <div class="container glass-heavy">
 
-    <h1>Your Financial Assessment</h1>
+    <!-- HEADER -->
+    <h2>Loan Recommendation Dashboard</h2>
+    <p>
+        Based on your financial profile and machine learning analysis,
+        here are your most suitable loan options.
+    </p>
 
+    <!-- RISK -->
     <div class="risk {{ risk|lower }}">
-        {{ risk }} Risk Profile | Score: {{ risk_score }}/100
+        {{ risk }} Risk Profile
     </div>
 
-    <p>{{ advisory }}</p>
+    <!-- 🏆 FLOATING BEST LOAN CARD -->
+    {% if best_loan %}
+    <div class="floating-loan-card">
+        <div class="badge">BEST MATCH</div>
 
-    <ul>
-        {% for reason in rule_reasons %}
-        <li>✔ {{ reason }}</li>
-        {% endfor %}
-    </ul>
+        <h3>🏆 Recommended Loan</h3>
 
-    <h2>Existing Loan Awareness</h2>
-    {% if pending_interest %}
-    <ul>
-        <li>Pending Amount: ₹{{ session.pending_amount }}</li>
-        <li>Approx Pending Interest: ₹{{ pending_interest.pending_interest }}</li>
-    </ul>
-    {% else %}
-    <p>No existing loan obligations</p>
+        <p><strong>Loan Type:</strong> {{ best_loan.loan_name }}</p>
+        <p><strong>Bank:</strong> {{ best_loan.bank }}</p>
+        <p><strong>Approval Probability:</strong> {{ best_loan.approval_probability * 100 }}%</p>
+        <p><strong>Eligible Amount:</strong> ₹{{ best_loan.eligible_amount }}</p>
+
+        <div class="recommendation
+            {% if 'Recommended' in best_loan.recommendation %}recommended
+            {% elif 'Risky' in best_loan.recommendation %}risky
+            {% else %}not{% endif %}">
+            {{ best_loan.recommendation }}
+        </div>
+
+        <p class="muted" style="margin-top:12px;">
+            Why? {{ best_loan.reason }}
+        </p>
+    </div>
     {% endif %}
 
-    <h2>Recommended Loan Options</h2>
-
-    {% for loan in loans %}
+    <!-- 📋 TOP LOAN OPTIONS -->
     <div class="loan-card">
-        <h3>{{ loan.loan_name }}</h3>
-        <p>{{ loan.bank }}</p>
-        <ul>
-            <li>Interest Rate: {{ loan.interest_rate }}</li>
-            <li>Tenure: {{ loan.tenure }}</li>
-            <li>Max Amount: ₹{{ loan.max_amount }}</li>
-        </ul>
-        <p>{{ loan.reason }}</p>
-    </div>
-    {% endfor %}
+        <h3>Top Loan Suggestions</h3>
 
-    <a href="/">Start New Analysis</a>
+        {% if loans %}
+        <table style="width:100%; margin-top:10px;">
+            <tr>
+                <th>#</th>
+                <th>Loan</th>
+                <th>Bank</th>
+                <th>Score</th>
+                <th>Status</th>
+            </tr>
+
+            {% for loan in loans %}
+            <tr {% if loop.index == 1 %}style="font-weight:bold;"{% endif %}>
+                <td>{{ loop.index }}</td>
+                <td>{{ loan.loan_name }}</td>
+                <td>{{ loan.bank }}</td>
+                <td>{{ loan.score }}%</td>
+                <td>{{ loan.recommendation }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>No loan options available.</p>
+        {% endif %}
+    </div>
+
+    <!-- EXISTING LOAN -->
+    <div class="loan-card">
+        <h3>Existing Loan Status</h3>
+
+        {% if pending_amount > 0 %}
+            <p>📌 Pending Amount: ₹{{ pending_amount }}</p>
+            <p>📉 Pending Interest: ₹{{ existing_interest }}</p>
+        {% else %}
+            <p>✅ No existing loan liabilities.</p>
+        {% endif %}
+    </div>
+
+    <!-- INTEREST COMPARISON -->
+    <div class="loan-card">
+        <h3>Interest Comparison</h3>
+        <ul>
+            <li>Existing Interest: ₹{{ existing_interest }}</li>
+            <li>New Loan Interest: ₹{{ new_interest }}</li>
+
+            {% if savings_percent > 0 %}
+            <li>💰 Potential Savings: {{ savings_percent }}%</li>
+            {% else %}
+            <li>⚠ No interest savings identified</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- ADVISORY -->
+    <div class="loan-card">
+        <h3>Advisory Summary</h3>
+        <p>{{ advisory }}</p>
+    </div>
+
+    <a href="{{ url_for('home') }}">← Start New Analysis</a>
 
 </div>
 

@@ -38,37 +38,41 @@ body {
         radial-gradient(circle at 20% 20%, #1b1b3a, transparent 40%),
         radial-gradient(circle at 80% 80%, #312e81, transparent 45%),
         linear-gradient(180deg, var(--bg-primary), #070710);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-primary);
 }
 
 /* ======================================================
-   CONTAINERS
+   GLASS CONTAINER (BASE)
    ====================================================== */
 .container {
     width: 100%;
-    max-width: 900px;
-    margin: auto;
-    padding: 40px 20px;
-}
+    max-width: 900px;   /* 🔥 desktop width */
+    padding: 40px 44px;
+    margin: 0 auto;
 
-.glass {
-    padding: 34px 32px;
     background: linear-gradient(
         135deg,
         rgba(255, 255, 255, 0.12),
         rgba(255, 255, 255, 0.03)
     );
+
     backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+
     border-radius: 26px;
     border: 1px solid var(--glass-border);
+
     box-shadow:
         0 30px 80px rgba(0, 0, 0, 0.5),
         0 0 30px var(--glass-shadow);
+
     animation: fadeInUp 0.8s ease;
-    margin-bottom: 30px;
 }
 
-/* EXTRA HEAVY GLASS (RESULT PAGE) */
+/* EXTRA HEAVY GLASS (RESULT / RECOMMENDATION) */
 .glass-heavy {
     background: rgba(20, 20, 50, 0.75);
     backdrop-filter: blur(30px) saturate(180%);
@@ -90,6 +94,7 @@ p {
     margin-bottom: 22px;
     font-size: 14px;
     color: var(--text-secondary);
+    opacity: 0.9;
 }
 
 /* ======================================================
@@ -106,8 +111,10 @@ input, select {
     border-radius: 14px;
     border: 1px solid rgba(139, 92, 246, 0.35);
     background: rgba(10, 10, 30, 0.6);
+
     color: var(--text-primary);
     font-size: 14px;
+
     transition: all 0.25s ease;
 }
 
@@ -127,19 +134,24 @@ input:focus, select:focus {
 button {
     margin-top: 18px;
     padding: 14px;
+
     border-radius: 18px;
     border: none;
+
     background: linear-gradient(
         135deg,
         var(--accent-purple),
         var(--accent-blue)
     );
+
     color: #0b0b20;
     font-weight: 600;
     cursor: pointer;
+
     box-shadow:
         0 10px 30px rgba(139, 92, 246, 0.45),
         0 0 15px rgba(79, 140, 255, 0.4);
+
     transition: all 0.25s ease;
 }
 
@@ -151,13 +163,13 @@ button:hover {
 }
 
 /* ======================================================
-   RISK BADGES
+   RISK LEVEL BADGES
    ====================================================== */
 .risk {
     text-align: center;
     padding: 12px;
     border-radius: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-weight: 600;
 }
 
@@ -180,7 +192,7 @@ button:hover {
 }
 
 /* ======================================================
-   LISTS
+   LISTS (RESULTS & RECOMMENDATIONS)
    ====================================================== */
 ul {
     list-style: none;
@@ -191,34 +203,12 @@ li {
     padding: 14px;
     border-radius: 12px;
     margin-bottom: 10px;
+
     background: rgba(15, 20, 45, 0.7);
     border-left: 4px solid var(--accent-blue);
+
+    color: var(--text-primary);
     font-size: 14px;
-}
-
-/* ======================================================
-   LOAN CARDS
-   ====================================================== */
-.loan-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-}
-
-.loan-card {
-    padding: 18px;
-    border-radius: 16px;
-    background: rgba(20, 20, 55, 0.75);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(139, 92, 246, 0.4);
-    box-shadow:
-        0 10px 30px rgba(79, 140, 255, 0.35),
-        0 0 15px rgba(0, 234, 255, 0.3);
-}
-
-.loan-card h3 {
-    color: var(--accent-cyan);
-    margin-bottom: 10px;
 }
 
 /* ======================================================
@@ -238,7 +228,7 @@ a:hover {
 }
 
 /* ======================================================
-   ANIMATION
+   ANIMATIONS
    ====================================================== */
 @keyframes fadeInUp {
     from {
@@ -256,6 +246,141 @@ a:hover {
    ====================================================== */
 @media (max-width: 480px) {
     .container {
-        padding: 20px 12px;
+        width: 92%;
     }
+}
+
+.loan-card {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(20, 20, 55, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow:
+        0 10px 30px rgba(79, 140, 255, 0.35),
+        0 0 15px rgba(0, 234, 255, 0.3);
+}
+
+.loan-card h3 {
+    color: #00eaff;
+    margin-bottom: 10px;
+}
+/* ======================================================
+   FLOATING BEST LOAN CARD (CYBERPUNK STYLE)
+   ====================================================== */
+
+.floating-loan-card {
+    position: relative;
+    margin: 30px auto 40px auto;
+    padding: 26px 30px;
+    max-width: 420px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(79, 140, 255, 0.18),
+        rgba(139, 92, 246, 0.12)
+    );
+
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+
+    border-radius: 22px;
+    border: 1px solid rgba(0, 234, 255, 0.55);
+
+    box-shadow:
+        0 25px 55px rgba(0, 234, 255, 0.35),
+        0 0 25px rgba(139, 92, 246, 0.45);
+
+    animation: floatGlow 4s ease-in-out infinite;
+}
+
+/* Floating animation */
+@keyframes floatGlow {
+    0% {
+        transform: translateY(0);
+        box-shadow:
+            0 25px 55px rgba(0, 234, 255, 0.35),
+            0 0 25px rgba(139, 92, 246, 0.45);
+    }
+    50% {
+        transform: translateY(-10px);
+        box-shadow:
+            0 35px 70px rgba(0, 234, 255, 0.55),
+            0 0 35px rgba(139, 92, 246, 0.65);
+    }
+    100% {
+        transform: translateY(0);
+        box-shadow:
+            0 25px 55px rgba(0, 234, 255, 0.35),
+            0 0 25px rgba(139, 92, 246, 0.45);
+    }
+}
+
+/* Best badge */
+.floating-loan-card .badge {
+    position: absolute;
+    top: -14px;
+    right: 20px;
+
+    background: linear-gradient(
+        135deg,
+        #00eaff,
+        #4f8cff
+    );
+
+    color: #0b0b20;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    padding: 6px 14px;
+    border-radius: 18px;
+
+    box-shadow:
+        0 6px 15px rgba(0, 234, 255, 0.6);
+}
+
+/* Card heading */
+.floating-loan-card h3 {
+    text-align: center;
+    margin-bottom: 14px;
+    font-size: 1.55rem;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 12px rgba(0, 234, 255, 0.6);
+}
+
+/* Card text */
+.floating-loan-card p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+/* Recommendation label */
+.recommendation {
+    margin-top: 16px;
+    padding: 12px;
+    text-align: center;
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+/* Recommendation colors */
+.recommendation.recommended {
+    background: rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+    border: 1px solid #22c55e;
+}
+
+.recommendation.risky {
+    background: rgba(234, 179, 8, 0.25);
+    color: #facc15;
+    border: 1px solid #eab308;
+}
+
+.recommendation.not {
+    background: rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    border: 1px solid #ef4444;
 }

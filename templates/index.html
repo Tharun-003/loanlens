@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LoanLens | AI Loan Advisor</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>LoanLens</h1>
+        <p>
+            Your AI-powered loan decision companion.<br>
+            Smart insights. Clear risks. Better choices.
+        </p>
+
+        <form action="{{ url_for('personal_details') }}" method="get">
+            <button type="submit">Get Started</button>
+        </form>
+
+        <a href="#">Secure • Transparent • Explainable</a>
+    </div>
+
+</body>
+</html>

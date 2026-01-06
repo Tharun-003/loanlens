@@ -2,21 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Suggested Loan Type | FinSense</title>
+    <title>LoanLens | Loan Purpose</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <style>
+        .loan-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .loan-card-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(20, 20, 55, 0.75);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: inherit;
+        }
+
+        .loan-card-btn:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow:
+                0 12px 30px rgba(79, 140, 255, 0.4),
+                0 0 18px rgba(0, 234, 255, 0.35);
+        }
+
+        .loan-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #00eaff;
+            margin-bottom: 6px;
+        }
+
+        .loan-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        form {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container glass-heavy">
-    <h1>Suggested Loan Type</h1>
-    < <p>Based on your selection, the following loan type is recommended</p>
+<div class="container">
+    <h2>Select Loan Purpose</h2>
+    <p>
+        Choose the type of loan you want to apply for.<br>
+        Simple, direct, and transparent.
+    </p>
 
-    <form method="post">
-        <input type="hidden" name="loan_type" value="{{ session.loan_type }}">
-        <div class="risk low">{{ session.loan_type }}</div>
-        <p>This loan type best matches your selected purpose.</p>
-        <button type="submit">Continue</button>
-    </form>
+    <div class="loan-options">
+
+        <!-- HOME LOAN -->
+        <form action="{{ url_for('home_loan') }}" method="get">
+            <button type="submit" class="loan-card-btn">
+                <div class="loan-title">🏠 Home Loan</div>
+                <div class="loan-desc">
+                    Choose this if you’re planning to buy, build, or renovate a home.
+                </div>
+            </button>
+        </form>
+
+        <!-- EDUCATION LOAN -->
+        <form action="{{ url_for('education_loan') }}" method="get">
+            <button type="submit" class="loan-card-btn">
+                <div class="loan-title">🎓 Education Loan</div>
+                <div class="loan-desc">
+                    Choose this if you’re funding higher studies in India or abroad.
+                </div>
+            </button>
+        </form>
+
+        <!-- PERSONAL LOAN -->
+        <form action="{{ url_for('personal_loan') }}" method="get">
+            <button type="submit" class="loan-card-btn">
+                <div class="loan-title">💳 Personal Loan</div>
+                <div class="loan-desc">
+                    Choose this for personal expenses, emergencies, or short-term needs.
+                </div>
+            </button>
+        </form>
+
+    </div>
+
+    <a href="{{ url_for('personal_details') }}">← Back</a>
 </div>
 
 </body>

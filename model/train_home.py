@@ -54,4 +54,3 @@ with open('../models/home_model.pkl', 'wb') as f:
 
 print(f"\n✅ Home Model Training Complete. Accuracy: {model.score(X_test, y_test):.2%}")
 
-#
