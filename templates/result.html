@@ -9,6 +9,8 @@
 
 <div class="container glass-heavy">
 
+    
+
     <!-- HEADER -->
     <h2>Loan Recommendation Dashboard</h2>
     <p>
@@ -21,28 +23,32 @@
         {{ risk }} Risk Profile
     </div>
 
-    <!-- 🏆 FLOATING BEST LOAN CARD -->
-    {% if best_loan %}
-    <div class="floating-loan-card">
-        <div class="badge">BEST MATCH</div>
+    <!-- 🏆 FLOATING TOP LOANS -->
+    {% if top_loans %}
+    <div class="floating-loan-row">
+        {% for loan in top_loans %}
+        <div class="floating-loan-card">
+            <div class="badge">BEST MATCH</div>
 
-        <h3>🏆 Recommended Loan</h3>
+            <h3>🏆 Recommended Loan</h3>
 
-        <p><strong>Loan Type:</strong> {{ best_loan.loan_name }}</p>
-        <p><strong>Bank:</strong> {{ best_loan.bank }}</p>
-        <p><strong>Approval Probability:</strong> {{ best_loan.approval_probability * 100 }}%</p>
-        <p><strong>Eligible Amount:</strong> ₹{{ best_loan.eligible_amount }}</p>
+            <p><strong>Loan Type:</strong> {{ loan.loan_name }}</p>
+            <p><strong>Bank:</strong> {{ loan.bank }}</p>
+            <p><strong>Approval Probability:</strong> {{ loan.approval_probability * 100 }}%</p>
+            <p><strong>Eligible Amount:</strong> ₹{{ loan.eligible_amount }}</p>
 
-        <div class="recommendation
-            {% if 'Recommended' in best_loan.recommendation %}recommended
-            {% elif 'Risky' in best_loan.recommendation %}risky
-            {% else %}not{% endif %}">
-            {{ best_loan.recommendation }}
+            <div class="recommendation
+                {% if 'Recommended' in loan.recommendation %}recommended
+                {% elif 'Risky' in loan.recommendation %}risky
+                {% else %}not{% endif %}">
+                {{ loan.recommendation }}
+            </div>
+
+            <p class="muted" style="margin-top:12px;">
+                Why? {{ loan.reason }}
+            </p>
         </div>
-
-        <p class="muted" style="margin-top:12px;">
-            Why? {{ best_loan.reason }}
-        </p>
+        {% endfor %}
     </div>
     {% endif %}
 
@@ -56,6 +62,7 @@
                 <th>#</th>
                 <th>Loan</th>
                 <th>Bank</th>
+                <th>Amount</th>
                 <th>Score</th>
                 <th>Status</th>
             </tr>
@@ -65,6 +72,7 @@
                 <td>{{ loop.index }}</td>
                 <td>{{ loan.loan_name }}</td>
                 <td>{{ loan.bank }}</td>
+                <td>₹{{ loan.eligible_amount }}</td>
                 <td>{{ loan.score }}%</td>
                 <td>{{ loan.recommendation }}</td>
             </tr>
@@ -92,7 +100,12 @@
         <h3>Interest Comparison</h3>
         <ul>
             <li>Existing Interest: ₹{{ existing_interest }}</li>
+
+            {% if using_refinance %}
+            <li>Refinancing Interest: ₹{{ refinance_interest }}</li>
+            {% else %}
             <li>New Loan Interest: ₹{{ new_interest }}</li>
+            {% endif %}
 
             {% if savings_percent > 0 %}
             <li>💰 Potential Savings: {{ savings_percent }}%</li>
@@ -100,17 +113,71 @@
             <li>⚠ No interest savings identified</li>
             {% endif %}
         </ul>
+        <!-- Interest chart -->
+        <div style="margin-top:18px;">
+            <canvas id="interestChart" width="800" height="260"></canvas>
+        </div>
     </div>
 
     <!-- ADVISORY -->
     <div class="loan-card">
         <h3>Advisory Summary</h3>
+        {% if reasons %}
+        <ul class="advisory-list" style="margin-top:12px; line-height:1.6;">
+            {% for r in reasons %}
+            <li>{{ r }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
         <p>{{ advisory }}</p>
+        {% endif %}
     </div>
 
     <a href="{{ url_for('home') }}">← Start New Analysis</a>
 
 </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const years = {{ interest_years|tojson }};
+    const newSeries = {{ new_interest_series|tojson }};
+    const existingSeries = {{ existing_interest_series|tojson }};
+
+    const ctx = document.getElementById('interestChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: years.map(y => y + 'y'),
+            datasets: [
+                {
+                    label: 'New Loan (cumulative interest)',
+                    data: newSeries,
+                    borderColor: '#00eaff',
+                    backgroundColor: 'rgba(0,234,255,0.08)',
+                    tension: 0.25,
+                    fill: true
+                },
+                {
+                    label: 'Existing Loan (cumulative interest)',
+                    data: existingSeries,
+                    borderColor: '#f43f5e',
+                    backgroundColor: 'rgba(244,63,94,0.06)',
+                    tension: 0.25,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+    
 
 </body>
 </html>

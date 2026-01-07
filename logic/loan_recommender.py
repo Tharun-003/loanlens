@@ -124,18 +124,101 @@ def recommend_loans(user_profile, risk_level):
         else:
             label = "Not Ideal – Improve Profile"
 
-        # -------- Bank --------
-        bank = random.choice(BANK_MAPPING.get(loan_name, ["Multiple Banks"]))
+        # -------- Bank-level suggestions (one entry per bank) --------
+        banks = BANK_MAPPING.get(loan_name, ["Multiple Banks"]) or [
+            "Multiple Banks"]
 
-        results.append({
-            "loan_name": loan_name,
-            "bank": bank,
-            "eligible_amount": f"{eligible:,}",
-            "approval_probability": round(approval_prob, 2),
-            "score": int(final_score),
-            "recommendation": label,
-            "reason": "Based on approval trends from historical loan dataset"
-        })
+        # Attempt to load product-level amounts from the dataset for this loan type
+        dataset_amounts = None
+        data_file_map = {
+            "Home Loan": os.path.join(PROJECT_ROOT, "data", "raw", "final_home_loan.csv"),
+            "Education Loan": os.path.join(PROJECT_ROOT, "data", "raw", "final_education_loans.csv"),
+            "Personal Loan": os.path.join(PROJECT_ROOT, "data", "raw", "final_personal_loan.csv"),
+        }
+        data_path = data_file_map.get(loan_name)
+        if data_path and os.path.exists(data_path):
+            try:
+                df_data = pd.read_csv(data_path)
+                # normalize column names
+                df_cols = [c.lower() for c in df_data.columns]
+                if "loan_amount" in df_cols and "bank" in df_cols or "bank_name" in df_cols:
+                    dataset_amounts = df_data
+            except Exception:
+                dataset_amounts = None
+
+        # small deterministic adjustments per bank so rankings vary
+        bank_shifts = [0.02, 0.01, 0.0, -0.01, -0.02]
+
+        # Create up to `desired_count` suggestions for the selected loan type.
+        desired_count = 5
+
+        # If there are fewer banks than desired, create product variants per bank
+        # (e.g., different product offerings) so the UI can show multiple options.
+        per_bank_variants = max(1, -(-desired_count // len(banks)))
+
+        idx = 0
+        while len([r for r in results if r["loan_name"] == loan_name]) < desired_count:
+            bank = banks[idx % len(banks)]
+            variant = (idx // len(banks))
+            suffix = f" (Product {chr(65+variant)})" if variant > 0 else ""
+
+            shift = bank_shifts[idx % len(bank_shifts)]
+            adj_approval = max(0.0, min(1.0, float(approval_prob) + shift))
+
+            # Prefer using dataset product amounts for the bank if available,
+            # otherwise fall back to the heuristic eligible amount based on requested.
+            eligible_adj = 0
+            if dataset_amounts is not None:
+                # determine bank column name
+                bank_col = "bank_name" if "bank_name" in dataset_amounts.columns else (
+                    "bank" if "bank" in dataset_amounts.columns else None)
+                amt_col = "loan_amount"
+                if bank_col in dataset_amounts.columns and amt_col in dataset_amounts.columns:
+                    # pick a central tendency (median) of amounts for this bank
+                    bank_amt_series = dataset_amounts[dataset_amounts[bank_col].astype(
+                        str).str.contains(bank, case=False, na=False)][amt_col]
+                    if not bank_amt_series.empty:
+                        base_amt = int(bank_amt_series.median())
+                    else:
+                        # if bank not found, use overall median
+                        base_amt = int(dataset_amounts[amt_col].median())
+
+                    # apply small deterministic variant shift
+                    eligible_adj = max(0, int(round(base_amt * (1 + shift))))
+                else:
+                    eligible_adj = 0
+            else:
+                # fallback: small variance around heuristic eligible
+                if requested > 0:
+                    eligible_adj = max(
+                        0, int(min(requested, round(eligible * (1 + shift)))))
+                else:
+                    eligible_adj = 0
+
+            adj_final_score = (
+                adj_approval * 70 +
+                eligibility_ratio * 20 +
+                risk_bonus
+            )
+
+            if adj_approval >= 0.6:
+                adj_label = "Recommended"
+            elif adj_approval >= 0.4:
+                adj_label = "Risky but Possible"
+            else:
+                adj_label = "Not Ideal – Improve Profile"
+
+            results.append({
+                "loan_name": loan_name,
+                "bank": f"{bank}{suffix}",
+                "eligible_amount": f"{eligible_adj:,}",
+                "approval_probability": round(adj_approval, 2),
+                "score": int(adj_final_score),
+                "recommendation": adj_label,
+                "reason": "Based on approval trends from historical loan dataset"
+            })
+
+            idx += 1
 
     # -------- SORT & RETURN --------
     results.sort(key=lambda x: x["score"], reverse=True)

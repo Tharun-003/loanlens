@@ -295,6 +295,32 @@ a:hover {
     animation: floatGlow 4s ease-in-out infinite;
 }
 
+/* Row wrapper for multiple floating cards (2x2 grid) */
+.floating-loan-row {
+    display: flex;
+    flex-wrap: wrap; /* allow wrapping to next row */
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 10px -6px 30px -6px;
+    padding-bottom: 8px;
+}
+
+/* Two cards per row (50% width each) */
+.floating-loan-row .floating-loan-card {
+    flex: 0 0 calc(50% - 24px);
+    max-width: calc(50% - 24px);
+    margin: 0;
+}
+
+/* Responsive: single column on narrow screens */
+@media (max-width: 800px) {
+    .floating-loan-row .floating-loan-card {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
 /* Floating animation */
 @keyframes floatGlow {
     0% {
@@ -378,6 +404,8 @@ a:hover {
     color: #facc15;
     border: 1px solid #eab308;
 }
+
+/* (Light theme styles removed — app defaults to dark theme) */
 
 .recommendation.not {
     background: rgba(239, 68, 68, 0.25);

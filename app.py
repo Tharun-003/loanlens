@@ -152,11 +152,13 @@ def result():
         "credit_score": session.get("credit_score", 0),
         "monthly_income": session.get("monthly_income", 0),
         "loan_amount": session.get("loan_amount", 0),
+        "pending_amount": session.get("pending_amount", 0),
         "loan_tenure": session.get("loan_tenure", 1),
         "property_value": session.get("property_value", 0),
         "down_payment": session.get("down_payment", 0),
         "study_country": session.get("study_country", ""),
         "employment_type": session.get("employment_type", ""),
+        "has_existing": session.get("has_existing", "No"),
         # ✅ REQUIRED FOR MODEL FILTERING
         "loan_type": f"{session.get('loan_type')} Loan"
     }
@@ -175,22 +177,43 @@ def result():
     # ---------------- ML LOAN RECOMMENDATION ----------------
     loans = recommend_loans(user_profile, risk)
     best_loan = loans[0] if loans else None
+    top_loans = loans[:4]
 
     # ---------------- INTEREST CALCULATIONS ----------------
     pending_amount = session.get("pending_amount", 0)
 
-    # New loan interest (simple & realistic)
-    new_interest = user_profile["loan_amount"] * \
-        0.08 * user_profile["loan_tenure"]
+    # New loan interest — compute using amortizing (reducing-balance) logic
+    # Use the recommended bank's typical rate when available so comparison is realistic
+    new_interest = 0.0
+    chosen_new_rate = 8.0
+    if best_loan and best_loan.get("bank"):
+        bank_name = best_loan.get("bank").split(" (")[0]
+        bank_rates = {"HDFC": 7.0, "ICICI": 7.25, "SBI": 6.9, "Axis Bank": 7.5}
+        chosen_new_rate = bank_rates.get(bank_name, 8.0)
+
+    if user_profile.get("loan_amount", 0) > 0 and user_profile.get("loan_tenure", 0) > 0:
+        new_interest_data = calculate_pending_interest(
+            principal=user_profile["loan_amount"],
+            annual_rate=chosen_new_rate,
+            total_months=max(1, int(user_profile.get("loan_tenure", 1)) * 12),
+            risk_level=risk
+        )
+
+        new_interest = (
+            new_interest_data.get("pending_interest", 0)
+            if isinstance(new_interest_data, dict)
+            else float(new_interest_data)
+        )
 
     existing_interest = 0
     savings_percent = 0
+    refinance_interest = 0
 
     if session.get("has_existing") == "Yes" and pending_amount > 0:
         interest_data = calculate_pending_interest(
             principal=pending_amount,
             annual_rate=session.get("old_interest", 0),
-            total_months=session.get("pending_years", 1) * 12,
+            total_months=max(1, int(session.get("pending_years", 1)) * 12),
             risk_level=risk
         )
 
@@ -201,10 +224,84 @@ def result():
             else float(interest_data)
         )
 
+        # Compute refinancing cost for the pending amount using chosen_new_rate
+        refinance_data = calculate_pending_interest(
+            principal=pending_amount,
+            annual_rate=chosen_new_rate,
+            total_months=max(1, int(session.get("pending_years", 1)) * 12),
+            risk_level=risk
+        )
+        refinance_interest = (
+            refinance_data.get("pending_interest", 0)
+            if isinstance(refinance_data, dict)
+            else float(refinance_data)
+        )
+
         if existing_interest > 0:
             savings_percent = round(
-                ((existing_interest - new_interest) / existing_interest) * 100, 2
+                ((existing_interest - refinance_interest) / existing_interest) * 100, 2
             )
+    else:
+        # No existing loan — compare requested new loan to zero
+        if new_interest > 0:
+            savings_percent = 0
+
+    # ---------------- INTEREST SERIES FOR CHART ----------------
+    loan_years = max(1, int(user_profile.get("loan_tenure", 1)))
+    pending_years = int(session.get("pending_years", 1)) if session.get(
+        "has_existing") == "Yes" else 0
+
+    # If user has an existing loan, show comparison over pending_years; otherwise use loan_years
+    span_years = max(
+        loan_years, pending_years if pending_years > 0 else loan_years)
+    interest_years = list(range(1, span_years + 1))
+
+    # Decide principal/timebase for the 'new' series used in the chart: when refinancing,
+    # use the pending_amount and pending_years so comparison is apples-to-apples.
+    if session.get("has_existing") == "Yes" and pending_amount > 0:
+        months = max(1, int(session.get("pending_years", 1)) * 12)
+        principal_base = float(pending_amount)
+    else:
+        months = loan_years * 12
+        principal_base = float(user_profile.get("loan_amount", 0))
+
+    new_interest_series = []
+    if months > 0 and principal_base > 0:
+        assumed_annual_rate = chosen_new_rate
+        risk_penalty = 0.0
+        if risk == "Medium":
+            risk_penalty = 1.5
+        elif risk == "High":
+            risk_penalty = 3.5
+
+        adjusted_rate = assumed_annual_rate + risk_penalty
+        monthly_rate = adjusted_rate / 12 / 100
+
+        balance = principal_base
+        principal_payment = balance / months
+        cumulative = 0.0
+        for m in range(1, months + 1):
+            interest_m = balance * monthly_rate
+            cumulative += interest_m
+            balance -= principal_payment
+
+            if m % 12 == 0:
+                new_interest_series.append(round(cumulative, 2))
+
+        while len(new_interest_series) < len(interest_years):
+            new_interest_series.append(
+                new_interest_series[-1] if new_interest_series else 0.0)
+    else:
+        new_interest_series = [0 for _ in interest_years]
+
+    # cumulative existing interest projected over pending_years (if present)
+    if pending_years > 0 and existing_interest > 0:
+        existing_interest_series = [
+            round(existing_interest * min(1.0, yr / pending_years), 2)
+            for yr in interest_years
+        ]
+    else:
+        existing_interest_series = [0 for _ in interest_years]
 
     # ---------------- RENDER ----------------
     return render_template(
@@ -215,10 +312,17 @@ def result():
         rule_reasons=rule_reasons,
         loans=loans,
         best_loan=best_loan,
+        top_loans=top_loans,
         pending_amount=pending_amount,
         existing_interest=existing_interest,
         new_interest=new_interest,
-        savings_percent=savings_percent
+        refinance_interest=refinance_interest,
+        using_refinance=(session.get("has_existing") ==
+                         "Yes" and pending_amount > 0),
+        savings_percent=savings_percent,
+        interest_years=interest_years,
+        new_interest_series=new_interest_series,
+        existing_interest_series=existing_interest_series
     )
 
 
