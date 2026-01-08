@@ -1,22 +1,22 @@
 /* ======================================================
-   LOANLENS – CYBERPUNK GLASS DARK BLUE THEME
+   LOANLENS – BANKING LIGHT THEME
    ====================================================== */
 
 :root {
-    --bg-primary: #0a0a15;
-    --bg-secondary: #0f1419;
+    --bg-primary: #f5f7fb;
+    --bg-secondary: #ffffff;
 
-    --accent-blue: #4f8cff;
-    --accent-purple: #8b5cf6;
-    --accent-cyan: #00eaff;
+    --accent-blue: #2563eb;
+    --accent-purple: #6d28d9;
+    --accent-cyan: #0891b2;
 
-    --text-primary: #eef0ff;
-    --text-secondary: #b6c2ff;
-    --text-muted: #6b7bbf;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
 
-    --glass-bg: rgba(15, 20, 40, 0.65);
-    --glass-border: rgba(139, 92, 246, 0.35);
-    --glass-shadow: rgba(79, 140, 255, 0.35);
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(15, 23, 42, 0.08);
+    --glass-shadow: rgba(2, 6, 23, 0.06);
 }
 
 /* ======================================================
@@ -35,9 +35,9 @@
 body {
     min-height: 100vh;
     background:
-        radial-gradient(circle at 20% 20%, #1b1b3a, transparent 40%),
-        radial-gradient(circle at 80% 80%, #312e81, transparent 45%),
-        linear-gradient(180deg, var(--bg-primary), #070710);
+        radial-gradient(circle at 20% 20%, rgba(37,99,235,0.06), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(14,165,164,0.05), transparent 45%),
+        linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -49,33 +49,32 @@ body {
    ====================================================== */
 .container {
     width: 100%;
-    max-width: 900px;   /* 🔥 desktop width */
+    max-width: 900px;
     padding: 40px 44px;
     margin: 0 auto;
 
     background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12),
-        rgba(255, 255, 255, 0.03)
+        180deg,
+        rgba(255,255,255,0.95),
+        rgba(248,250,252,0.9)
     );
 
-    backdrop-filter: blur(22px) saturate(160%);
-    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(130%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
 
     border-radius: 26px;
     border: 1px solid var(--glass-border);
 
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.5),
-        0 0 30px var(--glass-shadow);
+        0 12px 34px rgba(2,6,23,0.06);
 
     animation: fadeInUp 0.8s ease;
 }
 
 /* EXTRA HEAVY GLASS (RESULT / RECOMMENDATION) */
 .glass-heavy {
-    background: rgba(20, 20, 50, 0.75);
-    backdrop-filter: blur(30px) saturate(180%);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(26px) saturate(150%);
 }
 
 /* ======================================================
@@ -85,8 +84,7 @@ h1, h2 {
     text-align: center;
     margin-bottom: 18px;
     font-weight: 600;
-    color: var(--accent-cyan);
-    text-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+    color: var(--accent-blue);
 }
 
 p {
@@ -94,7 +92,6 @@ p {
     margin-bottom: 22px;
     font-size: 14px;
     color: var(--text-secondary);
-    opacity: 0.9;
 }
 
 /* ======================================================
@@ -109,8 +106,8 @@ form {
 input, select {
     padding: 14px 16px;
     border-radius: 14px;
-    border: 1px solid rgba(139, 92, 246, 0.35);
-    background: rgba(10, 10, 30, 0.6);
+    border: 1px solid rgba(15,23,42,0.08);
+    background: rgba(255,255,255,0.95);
 
     color: var(--text-primary);
     font-size: 14px;
@@ -124,8 +121,8 @@ input::placeholder {
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 15px rgba(0, 234, 255, 0.35);
+    border-color: var(--accent-blue);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.15);
 }
 
 /* ======================================================
@@ -140,26 +137,24 @@ button {
 
     background: linear-gradient(
         135deg,
-        var(--accent-purple),
-        var(--accent-blue)
+        var(--accent-blue),
+        var(--accent-purple)
     );
 
-    color: #0b0b20;
+    color: #ffffff;
     font-weight: 600;
     cursor: pointer;
 
     box-shadow:
-        0 10px 30px rgba(139, 92, 246, 0.45),
-        0 0 15px rgba(79, 140, 255, 0.4);
+        0 10px 26px rgba(37,99,235,0.2);
 
     transition: all 0.25s ease;
 }
 
 button:hover {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-1px);
     box-shadow:
-        0 15px 40px rgba(139, 92, 246, 0.65),
-        0 0 20px rgba(0, 234, 255, 0.6);
+        0 14px 34px rgba(37,99,235,0.28);
 }
 
 /* ======================================================
@@ -174,21 +169,21 @@ button:hover {
 }
 
 .risk.low {
-    background: rgba(34, 197, 94, 0.2);
-    color: #4ade80;
-    border: 1px solid #22c55e;
+    background: rgba(34,197,94,0.14);
+    color: #166534;
+    border: 1px solid rgba(34,197,94,0.22);
 }
 
 .risk.medium {
-    background: rgba(234, 179, 8, 0.2);
-    color: #facc15;
-    border: 1px solid #eab308;
+    background: rgba(234,179,8,0.14);
+    color: #92400e;
+    border: 1px solid rgba(234,179,8,0.22);
 }
 
 .risk.high {
-    background: rgba(239, 68, 68, 0.2);
-    color: #f87171;
-    border: 1px solid #ef4444;
+    background: rgba(239,68,68,0.14);
+    color: #991b1b;
+    border: 1px solid rgba(239,68,68,0.22);
 }
 
 /* ======================================================
@@ -204,10 +199,10 @@ li {
     border-radius: 12px;
     margin-bottom: 10px;
 
-    background: rgba(15, 20, 45, 0.7);
+    background: #ffffff;
     border-left: 4px solid var(--accent-blue);
 
-    color: var(--text-primary);
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
@@ -218,13 +213,13 @@ a {
     display: block;
     margin-top: 22px;
     text-align: center;
-    color: var(--accent-cyan);
+    color: var(--accent-blue);
     text-decoration: none;
     font-size: 14px;
 }
 
 a:hover {
-    text-shadow: 0 0 10px rgba(0, 234, 255, 0.6);
+    text-decoration: underline;
 }
 
 /* ======================================================
@@ -254,20 +249,18 @@ a:hover {
     margin-top: 18px;
     padding: 18px;
     border-radius: 16px;
-    background: rgba(20, 20, 55, 0.75);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(139, 92, 246, 0.4);
-    box-shadow:
-        0 10px 30px rgba(79, 140, 255, 0.35),
-        0 0 15px rgba(0, 234, 255, 0.3);
+    background: #ffffff;
+    border: 1px solid rgba(15,23,42,0.08);
+    box-shadow: 0 10px 26px rgba(2,6,23,0.06);
 }
 
 .loan-card h3 {
-    color: #00eaff;
+    color: var(--accent-blue);
     margin-bottom: 10px;
 }
+
 /* ======================================================
-   FLOATING BEST LOAN CARD (CYBERPUNK STYLE)
+   FLOATING BEST LOAN CARD (BANKING STYLE)
    ====================================================== */
 
 .floating-loan-card {
@@ -278,19 +271,18 @@ a:hover {
 
     background: linear-gradient(
         135deg,
-        rgba(79, 140, 255, 0.18),
-        rgba(139, 92, 246, 0.12)
+        rgba(37,99,235,0.05),
+        rgba(124,58,237,0.04)
     );
 
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
 
     border-radius: 22px;
-    border: 1px solid rgba(0, 234, 255, 0.55);
+    border: 1px solid rgba(15,23,42,0.08);
 
     box-shadow:
-        0 25px 55px rgba(0, 234, 255, 0.35),
-        0 0 25px rgba(139, 92, 246, 0.45);
+        0 18px 40px rgba(2,6,23,0.08);
 
     animation: floatGlow 4s ease-in-out infinite;
 }
@@ -298,7 +290,7 @@ a:hover {
 /* Row wrapper for multiple floating cards (2x2 grid) */
 .floating-loan-row {
     display: flex;
-    flex-wrap: wrap; /* allow wrapping to next row */
+    flex-wrap: wrap;
     gap: 24px;
     justify-content: center;
     align-items: flex-start;
@@ -313,7 +305,7 @@ a:hover {
     margin: 0;
 }
 
-/* Responsive: single column on narrow screens */
+/* Responsive: single column */
 @media (max-width: 800px) {
     .floating-loan-row .floating-loan-card {
         flex: 0 0 100%;
@@ -325,21 +317,15 @@ a:hover {
 @keyframes floatGlow {
     0% {
         transform: translateY(0);
-        box-shadow:
-            0 25px 55px rgba(0, 234, 255, 0.35),
-            0 0 25px rgba(139, 92, 246, 0.45);
+        box-shadow: 0 18px 40px rgba(2,6,23,0.08);
     }
     50% {
-        transform: translateY(-10px);
-        box-shadow:
-            0 35px 70px rgba(0, 234, 255, 0.55),
-            0 0 35px rgba(139, 92, 246, 0.65);
+        transform: translateY(-8px);
+        box-shadow: 0 26px 55px rgba(2,6,23,0.12);
     }
     100% {
         transform: translateY(0);
-        box-shadow:
-            0 25px 55px rgba(0, 234, 255, 0.35),
-            0 0 25px rgba(139, 92, 246, 0.45);
+        box-shadow: 0 18px 40px rgba(2,6,23,0.08);
     }
 }
 
@@ -351,19 +337,18 @@ a:hover {
 
     background: linear-gradient(
         135deg,
-        #00eaff,
-        #4f8cff
+        var(--accent-blue),
+        var(--accent-cyan)
     );
 
-    color: #0b0b20;
+    color: #ffffff;
     font-size: 0.75rem;
     font-weight: 700;
 
     padding: 6px 14px;
     border-radius: 18px;
 
-    box-shadow:
-        0 6px 15px rgba(0, 234, 255, 0.6);
+    box-shadow: 0 6px 16px rgba(37,99,235,0.25);
 }
 
 /* Card heading */
@@ -371,8 +356,7 @@ a:hover {
     text-align: center;
     margin-bottom: 14px;
     font-size: 1.55rem;
-    color: var(--accent-cyan);
-    text-shadow: 0 0 12px rgba(0, 234, 255, 0.6);
+    color: var(--accent-blue);
 }
 
 /* Card text */
@@ -392,23 +376,47 @@ a:hover {
     font-weight: 600;
 }
 
-/* Recommendation colors */
 .recommendation.recommended {
-    background: rgba(34, 197, 94, 0.25);
-    color: #4ade80;
-    border: 1px solid #22c55e;
+    background: rgba(34,197,94,0.18);
+    color: #166534;
+    border: 1px solid rgba(34,197,94,0.26);
 }
 
 .recommendation.risky {
-    background: rgba(234, 179, 8, 0.25);
-    color: #facc15;
-    border: 1px solid #eab308;
+    background: rgba(234,179,8,0.18);
+    color: #92400e;
+    border: 1px solid rgba(234,179,8,0.26);
 }
-
-/* (Light theme styles removed — app defaults to dark theme) */
 
 .recommendation.not {
-    background: rgba(239, 68, 68, 0.25);
-    color: #f87171;
-    border: 1px solid #ef4444;
+    background: rgba(239,68,68,0.18);
+    color: #991b1b;
+    border: 1px solid rgba(239,68,68,0.26);
 }
+
+/* ======================================================
+   LOAN PURPOSE OPTION CARDS – THEME AWARE
+   ====================================================== */
+
+.loan-option,
+.loan-purpose,
+.loan-choice {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+
+    box-shadow: 0 10px 26px var(--glass-shadow);
+}
+
+.loan-option p,
+.loan-purpose p {
+    color: var(--text-secondary);
+}
+
+/* hover */
+.loan-option:hover,
+.loan-purpose:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 0 14px 32px rgba(37,99,235,0.18);
+}
+

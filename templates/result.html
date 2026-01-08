@@ -23,14 +23,14 @@
         {{ risk }} Risk Profile
     </div>
 
-    <!-- 🏆 FLOATING TOP LOANS -->
+    <!--  FLOATING TOP LOANS -->
     {% if top_loans %}
     <div class="floating-loan-row">
         {% for loan in top_loans %}
         <div class="floating-loan-card">
             <div class="badge">BEST MATCH</div>
 
-            <h3>🏆 Recommended Loan</h3>
+            <h3> Recommended Loan</h3>
 
             <p><strong>Loan Type:</strong> {{ loan.loan_name }}</p>
             <p><strong>Bank:</strong> {{ loan.bank }}</p>
