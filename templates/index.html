@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | AI Loan Advisor</title>
-
-    <!-- Main CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | AI-Powered Loan Advisor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>LoanLens</h1>
-        <p>
-            Your AI-powered loan decision companion.<br>
-            Smart insights. Clear risks. Better choices.
-        </p>
+    <div class="container glass-heavy">
+        <div class="hero-section animate-in">
+            <span class="hero-badge">AI FINANCIAL INTELLIGENCE</span>
+            <h1 class="hero-title">FINSENSE</h1>
+            <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 30px auto;">
+                Empowering your financial future with smart, transparent, and personalized loan recommendations driven
+                by advanced AI analysis.
+            </p>
 
-        <form action="{{ url_for('personal_details') }}" method="get">
-            <button type="submit">Get Started</button>
-        </form>
 
-        <a href="#">Secure • Transparent • Explainable</a>
+
+            <form action="{{ url_for('personal_details') }}" method="get">
+                <button type="submit" class="btn-primary" style="width: auto; padding-left: 40px; padding-right: 40px;">
+                    Get Started <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div style="margin-top: 40px; display: flex; justify-content: center; gap: 30px;">
+                <span style="font-size: 0.8rem; color: var(--text-muted); display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-shield-alt" style="color:#22c55e;"></i> Bank-Grade Security
+                </span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-check-circle" style="color:var(--accent-blue);"></i> Unbiased Advice
+                </span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-bolt" style="color:#eab308;"></i> Instant Analysis
+                </span>
+            </div>
+        </div>
     </div>
 
 </body>
+
 </html>

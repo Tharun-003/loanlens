@@ -1,92 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | Home Loan Details</title>
-
-    <!-- Main CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | Home Loan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<div class="container">
-        <h2>Home Loan Details</h2>
-        <p>
-            Tell us about your property and employment.<br>
-            This helps us evaluate affordability and risk.
-        </p>
+    <div class="container glass-heavy animate-in" style="max-width: 700px;">
+
+        <!-- STEPPER -->
+        <div class="stepper">
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step active">3</div>
+            <div class="step">4</div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 10px 0;"><i class="fas fa-home" style="color:var(--accent-blue);"></i> Property
+                Financing</h2>
+            <p style="margin: 0;">Analyze your real estate investment potential with AI precision.</p>
+        </div>
 
         <form action="{{ url_for('home_loan') }}" method="post">
 
-            <!-- Core Financials (USED IN BACKEND) -->
-            <input
-                type="number"
-                name="loan_amount"
-                placeholder="Loan Amount (₹)"
-                min="0"
-                required
-            >
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Loan
+                        Amount (₹)</label>
+                    <input type="number" name="loan_amount" placeholder="e.g. 5000000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="loan_tenure"
-                placeholder="Loan Tenure (Years)"
-                min="1"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Loan
+                        Tenure (Years)</label>
+                    <input type="number" name="loan_tenure" placeholder="e.g. 20" min="1" required style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="property_value"
-                placeholder="Property Value (₹)"
-                min="0"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Property
+                        Value (₹)</label>
+                    <input type="number" name="property_value" placeholder="e.g. 6500000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="down_payment"
-                placeholder="Down Payment Amount (₹)"
-                min="0"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Down
+                        Payment (₹)</label>
+                    <input type="number" name="down_payment" placeholder="e.g. 1500000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <!-- Employment Details -->
-            <select name="employment_type" required>
-                <option value="" disabled selected>Employment Type</option>
-                <option value="Salaried">Salaried</option>
-                <option value="Self-Employed">Self-Employed</option>
-            </select>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Employment
+                        Type</label>
+                    <select name="employment_type" required style="width: 100%;">
+                        <option value="" disabled selected>Select Engagement</option>
+                        <option value="Salaried">Salaried Professional</option>
+                        <option value="Self-Employed">Entrepreneur / Self-Employed</option>
+                    </select>
+                </div>
 
-            <select name="job_stability" required>
-                <option value="" disabled selected>Job Stability</option>
-                <option value="Less than 1 year">Less than 1 year</option>
-                <option value="1–3 years">1–3 years</option>
-                <option value="More than 3 years">More than 3 years</option>
-            </select>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Property
+                        Location</label>
+                    <select name="property_location" required style="width: 100%;">
+                        <option value="" disabled selected>Select Zone</option>
+                        <option value="Urban">Urban (City Center)</option>
+                        <option value="Semi-Urban">Semi-Urban (Suburbs)</option>
+                        <option value="Rural">Rural (Outskirts)</option>
+                    </select>
+                </div>
 
-            <!-- Property Details -->
-            <select name="property_location" required>
-                <option value="" disabled selected>Property Location Type</option>
-                <option value="Urban">Urban</option>
-                <option value="Semi-Urban">Semi-Urban</option>
-                <option value="Rural">Rural</option>
-            </select>
+                <div class="input-group full-width" style="grid-column: span 2;">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Total
+                        Existing Monthly EMIs (₹)</label>
+                    <input type="number" name="existing_emi" placeholder="e.g. 5000 (Optional)" min="0"
+                        style="width: 100%;">
+                </div>
+            </div>
 
-            <!-- Existing EMIs (optional but realistic) -->
-            <input
-                type="number"
-                name="existing_emi"
-                placeholder="Total Existing Monthly EMIs (₹)"
-                min="0"
-            >
-
-            <button type="submit">Continue</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 30px;">
+                Proceed to Verification <i class="fas fa-arrow-right"></i>
+            </button>
         </form>
 
-        <a href="{{ url_for('loan_purpose') }}">← Back</a>
-    
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="{{ url_for('loan_purpose') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Change Loan Type
+            </a>
+        </div>
+
     </div>
 
-    </body>
-    </html>
+</body>
+
+</html>

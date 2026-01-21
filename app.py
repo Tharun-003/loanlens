@@ -8,7 +8,7 @@ from logic.rule_eligibility import rule_based_eligibility
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-app.secret_key = "loanlens_secret_key"
+app.secret_key = "finsense_secret_key"
 
 
 # -------------------------------------------------
@@ -75,6 +75,13 @@ def education_loan():
         session["loan_amount"] = int(request.form.get("loan_amount", 0))
         session["loan_tenure"] = int(request.form.get("tenure", 1))
         session["study_country"] = request.form.get("study_country")
+        
+        # ✅ CAPTURE MISSING FIELDS
+        session["course_level"] = request.form.get("course_level")
+        session["course_type"] = request.form.get("course_type")
+        session["college_tier"] = request.form.get("college_tier")
+        session["guardian_income"] = int(request.form.get("guardian_income", 0))
+        
         return redirect(url_for("existing_loan"))
     return render_template("education_loan.html")
 
@@ -92,6 +99,12 @@ def home_loan():
         session["loan_tenure"] = int(request.form.get("loan_tenure", 1))
         session["property_value"] = int(request.form.get("property_value", 0))
         session["down_payment"] = int(request.form.get("down_payment", 0))
+        
+        # ✅ CAPTURE MISSING FIELDS
+        session["employment_type"] = request.form.get("employment_type")
+        session["property_location"] = request.form.get("property_location")
+        session["existing_emi"] = int(request.form.get("existing_emi") or 0)
+        
         return redirect(url_for("existing_loan"))
     return render_template("home_loan.html")
 
@@ -108,6 +121,13 @@ def personal_loan():
         session["loan_amount"] = int(request.form.get("loan_amount", 0))
         session["loan_tenure"] = int(request.form.get("loan_tenure", 1))
         session["employment_type"] = request.form.get("employment_type")
+        
+        # ✅ CAPTURE MISSING FIELDS
+        session["employer_type"] = request.form.get("employer_type")
+        session["salary_bank"] = request.form.get("salary_bank")
+        session["debt_income_ratio"] = int(request.form.get("debt_income_ratio", 0))
+        session["job_stability"] = request.form.get("job_stability")
+        
         return redirect(url_for("existing_loan"))
     return render_template("personal_loan.html")
 
@@ -159,6 +179,18 @@ def result():
         "study_country": session.get("study_country", ""),
         "employment_type": session.get("employment_type", ""),
         "has_existing": session.get("has_existing", "No"),
+        # ✅ EXPANDED FIELDS FOR ML MODELS
+        "course_level": session.get("course_level"),
+        "course_type": session.get("course_type"),
+        "college_tier": session.get("college_tier"),
+        "guardian_income": session.get("guardian_income", 0),
+        "property_location": session.get("property_location"),
+        "existing_emi": session.get("existing_emi", 0),
+        "employer_type": session.get("employer_type"),
+        "salary_bank": session.get("salary_bank"),
+        "debt_income_ratio": session.get("debt_income_ratio", 0),
+        "job_stability": session.get("job_stability"),
+        
         # ✅ REQUIRED FOR MODEL FILTERING
         "loan_type": f"{session.get('loan_type')} Loan"
     }

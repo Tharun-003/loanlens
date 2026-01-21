@@ -1,62 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | Existing Loan Details</title>
-
-    <!-- Main CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | Existing Loan Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<div class="container">
-        <h2>Existing Loan Details</h2>
-        <p>
-            Provide details of your current loan.<br>
-            This helps us compare interest burden and savings.
-        </p>
+    <div class="container glass-heavy animate-in" style="max-width: 650px;">
+
+        <!-- STEPPER -->
+        <div class="stepper">
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step active">4</div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 10px 0;"><i class="fas fa-history" style="color:var(--accent-purple);"></i> Liability
+                Profile</h2>
+            <p style="margin: 0;">Provide your current loan parameters to calculate potential refinancing savings.</p>
+        </div>
 
         <form action="{{ url_for('old_loan_details') }}" method="post">
 
-            <input
-                type="number"
-                name="old_loan_amount"
-                placeholder="Original Loan Amount (₹)"
-                min="0"
-                required
-            >
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Original
+                        Principal (₹)</label>
+                    <input type="number" name="old_loan_amount" placeholder="e.g. 1000000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="pending_amount"
-                placeholder="Pending Loan Amount (₹)"
-                min="0"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Current
+                        Pending (₹)</label>
+                    <input type="number" name="pending_amount" placeholder="e.g. 750000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                step="0.01"
-                name="interest_rate"
-                placeholder="Interest Rate (%)"
-                min="0"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Current
+                        Int. Rate (%)</label>
+                    <input type="number" step="0.01" name="interest_rate" placeholder="e.g. 12.5" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="pending_years"
-                placeholder="Pending Tenure (Years)"
-                min="1"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Remaining
+                        Years</label>
+                    <input type="number" name="pending_years" placeholder="e.g. 5" min="1" required
+                        style="width: 100%;">
+                </div>
+            </div>
 
-            <button type="submit">Continue</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 30px;">
+                Finalize Analysis <i class="fas fa-microchip"></i>
+            </button>
         </form>
 
-        <a href="{{ url_for('existing_loan') }}">← Back</a>
-    
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="{{ url_for('existing_loan') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Change Selection
+            </a>
+        </div>
+
     </div>
 
-    </body>
-    </html>
+</body>
+
+</html>

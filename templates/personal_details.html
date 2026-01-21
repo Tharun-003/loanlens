@@ -1,54 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | Personal Details</title>
-
-    <!-- Main CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | Personal Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<div class="container">
-        <h2>Personal Details</h2>
-        <p>
-            Tell us a little about yourself.<br>
-            This helps us personalise your loan analysis.
-        </p>
+    <div class="container glass-heavy animate-in" style="max-width: 600px;">
+
+        <!-- STEPPER -->
+        <div class="stepper">
+            <div class="step active">1</div>
+            <div class="step">2</div>
+            <div class="step">3</div>
+            <div class="step">4</div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 10px 0;">Personal Profile</h2>
+            <p style="margin: 0;">Establish your financial foundation for AI analysis.</p>
+        </div>
 
         <form action="{{ url_for('personal_details') }}" method="post">
 
-            <input
-                type="number"
-                name="age"
-                placeholder="Age"
-                min="18"
-                required
-            >
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                        <i class="fas fa-birthday-cake" style="color:var(--accent-purple); margin-right: 5px;"></i> Your
+                        Age
+                    </label>
+                    <input type="number" name="age" placeholder="e.g. 28" min="18" required style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="monthly_income"
-                placeholder="Monthly Income (₹)"
-                min="0"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                        <i class="fas fa-money-bill-wave" style="color:#22c55e; margin-right: 5px;"></i> Monthly Income
+                        (₹)
+                    </label>
+                    <input type="number" name="monthly_income" placeholder="e.g. 75000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="credit_score"
-                placeholder="Credit Score"
-                min="300"
-                max="900"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                        <i class="fas fa-shield-alt" style="color:var(--accent-blue); margin-right: 5px;"></i> Credit
+                        Score
+                    </label>
+                    <input type="number" name="credit_score" placeholder="300 - 900" min="300" max="900" required
+                        style="width: 100%;">
+                    <p style="text-align:left; font-size: 0.7rem; color: var(--text-muted); margin: 5px 0 0 0;">
+                        Higher scores generally unlock better interest rates.
+                    </p>
+                </div>
+            </div>
 
-            <button type="submit">Continue</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px;">
+                Continue Journey <i class="fas fa-arrow-right"></i>
+            </button>
         </form>
 
-        <a href="{{ url_for('home') }}">← Back to Home</a>
-    
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="{{ url_for('home') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+
     </div>
 
-    </body>
-    </html>
+</body>
+
+</html>

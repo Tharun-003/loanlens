@@ -58,34 +58,62 @@ def recommend_loans(user_profile, risk_level):
 
         for col in model.feature_names_in_:
 
+            # --- NUMERIC FEATURES ---
             if col == "age":
                 row[col] = user_profile.get("age", 30)
-
             elif col == "credit_score":
                 row[col] = user_profile.get("credit_score", 650)
-
             elif col == "monthly_income":
                 row[col] = user_profile.get("monthly_income", 30000)
-
             elif col == "loan_amount":
                 row[col] = user_profile.get("loan_amount", 0)
-
             elif col == "loan_tenure":
                 row[col] = user_profile.get("loan_tenure", 10)
-
             elif col == "property_value":
                 row[col] = user_profile.get("property_value", 0)
-
             elif col == "down_payment":
                 row[col] = user_profile.get("down_payment", 0)
+            elif col == "guardian_income":
+                row[col] = user_profile.get("guardian_income", 0)
+            elif col == "existing_emis":
+                row[col] = user_profile.get("existing_emi", 0)
+            elif col == "study_duration":
+                # Fallback to tenure if separate duration not captured
+                row[col] = user_profile.get("loan_tenure", 2)
+            elif col == "debt_to_income":
+                 row[col] = user_profile.get("debt_income_ratio", 0)
 
+            # --- DEFAULTS FOR MISSING FIELDS ---
+            elif col == "property_age":
+                row[col] = 0  # Assume New
+            elif col == "moratorium_applicable":
+                row[col] = 1  # Assume Yes
+            elif col == "credit_card_usage":
+                row[col] = 0  # Assume None/Low
+
+            # --- CATEGORICAL FEATURES ---
             else:
+                # Map model feature names to session keys
+                key_map = {
+                    "property_location_type": "property_location",
+                    "salary_account_bank": "salary_bank",
+                    "employer_type_category": "employer_type" # potentially needed if name varies
+                }
+                
+                profile_key = key_map.get(col, col)
+                raw_val = user_profile.get(profile_key)
+                
                 encoder = load_encoder(prefix, col)
                 if encoder:
-                    value = str(user_profile.get(col, encoder.classes_[0]))
-                    if value not in encoder.classes_:
-                        value = encoder.classes_[0]
-                    row[col] = encoder.transform([value])[0]
+                    # Safe handling of missing/unknown values
+                    if not raw_val:
+                        val = encoder.classes_[0]
+                    else:
+                        val = str(raw_val).strip()
+                        if val not in encoder.classes_:
+                            val = encoder.classes_[0]
+                            
+                    row[col] = encoder.transform([val])[0]
                 else:
                     row[col] = 0
 

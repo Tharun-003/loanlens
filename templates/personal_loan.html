@@ -1,85 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | Personal Loan Details</title>
-
-    <!-- Main CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | Personal Loan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<div class="container">
-        <h2>Personal Loan Details</h2>
-        <p>
-            Personal loans are unsecured and risk-sensitive.<br>
-            Provide accurate details for better assessment.
-        </p>
+    <div class="container glass-heavy animate-in" style="max-width: 700px;">
+
+        <!-- STEPPER -->
+        <div class="stepper">
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step active">3</div>
+            <div class="step">4</div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 10px 0;"><i class="fas fa-credit-card" style="color:var(--accent-cyan);"></i>
+                Flexible Funding</h2>
+            <p style="margin: 0;">Unsecured credit analysis based on your professional stability and cash flow.</p>
+        </div>
 
         <form action="{{ url_for('personal_loan') }}" method="post">
 
-            <!-- Core Financials (USED IN BACKEND) -->
-            <input
-                type="number"
-                name="loan_amount"
-                placeholder="Loan Amount (₹)"
-                min="0"
-                required
-            >
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Loan
+                        Amount (₹)</label>
+                    <input type="number" name="loan_amount" placeholder="e.g. 500000" min="0" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="loan_tenure"
-                placeholder="Loan Tenure (Years)"
-                min="1"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Loan
+                        Tenure (Years)</label>
+                    <input type="number" name="loan_tenure" placeholder="e.g. 3" min="1" required style="width: 100%;">
+                </div>
 
-            <!-- Employment Details -->
-            <select name="employment_type" required>
-                <option value="" disabled selected>Employment Type</option>
-                <option value="Salaried">Salaried</option>
-                <option value="Self-Employed">Self-Employed</option>
-            </select>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Employment
+                        Type</label>
+                    <select name="employment_type" required style="width: 100%;">
+                        <option value="" disabled selected>Select Sector</option>
+                        <option value="Salaried">Salaried Employee</option>
+                        <option value="Self-Employed">Self-Employed / Freelancer</option>
+                    </select>
+                </div>
 
-            <select name="employer_type" required>
-                <option value="" disabled selected>Employer Type</option>
-                <option value="MNC">MNC</option>
-                <option value="Private">Private Company</option>
-                <option value="Startup">Startup</option>
-                <option value="Government">Government</option>
-            </select>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Employer
+                        Type</label>
+                    <select name="employer_type" required style="width: 100%;">
+                        <option value="" disabled selected>Select Category</option>
+                        <option value="MNC">Multinational (MNC)</option>
+                        <option value="Private">Private Limited</option>
+                        <option value="Startup">Early-Stage Startup</option>
+                        <option value="Government">Public / Government</option>
+                    </select>
+                </div>
 
-            <select name="job_stability" required>
-                <option value="" disabled selected>Job Stability</option>
-                <option value="Less than 1 year">Less than 1 year</option>
-                <option value="1–3 years">1–3 years</option>
-                <option value="More than 3 years">More than 3 years</option>
-            </select>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Salary
+                        Processing Bank</label>
+                    <input type="text" name="salary_bank" placeholder="e.g. HDFC Bank" required style="width: 100%;">
+                </div>
 
-            <!-- Banking & Debt -->
-            <input
-                type="text"
-                name="salary_bank"
-                placeholder="Salary Account Bank"
-                required
-            >
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Debt-to-Income
+                        Ratio (%)</label>
+                    <input type="number" name="debt_income_ratio" placeholder="e.g. 30" min="0" max="100" required
+                        style="width: 100%;">
+                </div>
 
-            <input
-                type="number"
-                name="debt_income_ratio"
-                placeholder="Debt-to-Income Ratio (%)"
-                min="0"
-                max="100"
-                required
-            >
+                <div class="input-group full-width" style="grid-column: span 2;">
+                    <label
+                        style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Professional
+                        Experience</label>
+                    <select name="job_stability" required style="width: 100%;">
+                        <option value="" disabled selected>Select Stability Range</option>
+                        <option value="Less than 1 year">Growth Phase ( < 1 yr )</option>
+                        <option value="1–3 years">Established ( 1 - 3 yrs )</option>
+                        <option value="More than 3 years">Veteran ( > 3 yrs )</option>
+                    </select>
+                </div>
+            </div>
 
-            <button type="submit">Continue</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 30px;">
+                Proceed to Verification <i class="fas fa-arrow-right"></i>
+            </button>
         </form>
 
-        <a href="{{ url_for('loan_purpose') }}">← Back</a>
-    
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="{{ url_for('loan_purpose') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Change Loan Type
+            </a>
+        </div>
+
     </div>
 
-    </body>
-    </html>
+</body>
+
+</html>

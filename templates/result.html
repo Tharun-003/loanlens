@@ -1,183 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | Loan Recommendation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
 
-<div class="container glass-heavy">
+<body class="dashboard-body">
 
-    
+    <div class="container glass-heavy fullscreen-container">
 
-    <!-- HEADER -->
-    <h2>Loan Recommendation Dashboard</h2>
-    <p>
-        Based on your financial profile and machine learning analysis,
-        here are your most suitable loan options.
-    </p>
+        <!-- DASHBOARD HEADER -->
+        <header class="dashboard-header animate-in" style="animation-delay: 0.1s;">
+            <div class="brand">
+                <h2 style="margin:0; text-align:left;"><i class="fas fa-chart-line"></i> FINSENSE Dashboard</h2>
+                <p style="margin:0; text-align:left; font-size: 0.8rem;">Financial Analysis & Recommendations</p>
+            </div>
+            <div class="user-info">
+                <span style="font-size: 0.9rem; font-weight: 500;">Hi, {{ session.get('user', 'User') }}</span>
+                <div class="user-avatar">{{ session.get('user', 'U')[0]|upper }}</div>
+                <a href="{{ url_for('home') }}" style="margin:0; font-size: 1.2rem;" title="Home"><i
+                        class="fas fa-home"></i></a>
+            </div>
+        </header>
 
-    <!-- RISK -->
-    <div class="risk {{ risk|lower }}">
-        {{ risk }} Risk Profile
-    </div>
+        <div class="dashboard-grid">
 
-    <!--  FLOATING TOP LOANS -->
-    {% if top_loans %}
-    <div class="floating-loan-row">
-        {% for loan in top_loans %}
-        <div class="floating-loan-card">
-            <div class="badge">BEST MATCH</div>
-
-            <h3> Recommended Loan</h3>
-
-            <p><strong>Loan Type:</strong> {{ loan.loan_name }}</p>
-            <p><strong>Bank:</strong> {{ loan.bank }}</p>
-            <p><strong>Approval Probability:</strong> {{ loan.approval_probability * 100 }}%</p>
-            <p><strong>Eligible Amount:</strong> ₹{{ loan.eligible_amount }}</p>
-
-            <div class="recommendation
-                {% if 'Recommended' in loan.recommendation %}recommended
-                {% elif 'Risky' in loan.recommendation %}risky
-                {% else %}not{% endif %}">
-                {{ loan.recommendation }}
+            <!-- METRIC CARDS -->
+            <div class="dashboard-item animate-in" style="animation-delay: 0.2s;">
+                <div class="metric-card">
+                    <div class="metric-label">Best Match Score</div>
+                    <div class="metric-value">{{ best_loan.score if best_loan else 0 }}%</div>
+                    <div class="metric-label" style="font-size: 0.7rem; color: #22c55e;">High Approval Probability</div>
+                </div>
             </div>
 
-            <p class="muted" style="margin-top:12px;">
-                Why? {{ loan.reason }}
-            </p>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+            <div class="dashboard-item animate-in" style="animation-delay: 0.3s;">
+                <div class="metric-card">
+                    <div class="metric-label">Risk Profile</div>
+                    <div class="metric-value"
+                        style="color: {% if risk|lower == 'low' %}#22c55e{% elif risk|lower == 'medium' %}#eab308{% else %}#ef4444{% endif %};">
+                        {{ risk }}
+                    </div>
+                    <div class="risk-meter">
+                        <div class="risk-meter-bar {{ risk|lower }}"></div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- 📋 TOP LOAN OPTIONS -->
-    <div class="loan-card">
-        <h3>Top Loan Suggestions</h3>
+            <div class="dashboard-item animate-in" style="animation-delay: 0.4s;">
+                <div class="metric-card">
+                    <div class="metric-label">Potential savings</div>
+                    <div class="metric-value" style="color: #6d28d9;">{{ savings_percent }}%</div>
+                    <div class="metric-label" style="font-size: 0.7rem;">Expected Interest Reduction</div>
+                </div>
+            </div>
 
-        {% if loans %}
-        <table style="width:100%; margin-top:10px;">
-            <tr>
-                <th>#</th>
-                <th>Loan</th>
-                <th>Bank</th>
-                <th>Amount</th>
-                <th>Score</th>
-                <th>Status</th>
-            </tr>
-
-            {% for loan in loans %}
-            <tr {% if loop.index == 1 %}style="font-weight:bold;"{% endif %}>
-                <td>{{ loop.index }}</td>
-                <td>{{ loan.loan_name }}</td>
-                <td>{{ loan.bank }}</td>
-                <td>₹{{ loan.eligible_amount }}</td>
-                <td>{{ loan.score }}%</td>
-                <td>{{ loan.recommendation }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-            <p>No loan options available.</p>
-        {% endif %}
-    </div>
-
-    <!-- EXISTING LOAN -->
-    <div class="loan-card">
-        <h3>Existing Loan Status</h3>
-
-        {% if pending_amount > 0 %}
-            <p>📌 Pending Amount: ₹{{ pending_amount }}</p>
-            <p>📉 Pending Interest: ₹{{ existing_interest }}</p>
-        {% else %}
-            <p>✅ No existing loan liabilities.</p>
-        {% endif %}
-    </div>
-
-    <!-- INTEREST COMPARISON -->
-    <div class="loan-card">
-        <h3>Interest Comparison</h3>
-        <ul>
-            <li>Existing Interest: ₹{{ existing_interest }}</li>
-
-            {% if using_refinance %}
-            <li>Refinancing Interest: ₹{{ refinance_interest }}</li>
-            {% else %}
-            <li>New Loan Interest: ₹{{ new_interest }}</li>
+            <!-- MAIN RECOMMENDATION -->
+            {% if best_loan %}
+            <div class="dashboard-item two-thirds animate-in" style="animation-delay: 0.5s;">
+                <h3 style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:var(--accent-blue);"><i class="fas fa-award"></i> Top Recommendation</span>
+                    <span class="badge"
+                        style="background:var(--accent-blue); color:white; font-size:0.7rem; padding:4px 8px; border-radius:10px;">BEST
+                        MATCH</span>
+                </h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div>
+                        <p style="text-align:left; margin-bottom: 5px;"><strong>Bank:</strong> {{ best_loan.bank }}</p>
+                        <p style="text-align:left; margin-bottom: 5px;"><strong>Loan Name:</strong> {{
+                            best_loan.loan_name }}</p>
+                        <p style="text-align:left; margin-bottom: 5px;"><strong>Eligible Amount:</strong> ₹{{
+                            best_loan.eligible_amount }}</p>
+                    </div>
+                    <div>
+                        <div class="recommendation {% if 'Recommended' in best_loan.recommendation %}recommended{% elif 'Risky' in best_loan.recommendation %}risky{% else %}not{% endif %}"
+                            style="margin:0;">
+                            {{ best_loan.recommendation }}
+                        </div>
+                        <p class="muted" style="margin-top:10px; font-size: 0.8rem; text-align:left;">
+                            {{ best_loan.reason }}
+                        </p>
+                    </div>
+                </div>
+            </div>
             {% endif %}
 
-            {% if savings_percent > 0 %}
-            <li>💰 Potential Savings: {{ savings_percent }}%</li>
-            {% else %}
-            <li>⚠ No interest savings identified</li>
-            {% endif %}
-        </ul>
-        <!-- Interest chart -->
-        <div style="margin-top:18px;">
-            <canvas id="interestChart" width="800" height="260"></canvas>
+            <!-- EXISTING LOAN STATUS -->
+            <div class="dashboard-item animate-in" style="animation-delay: 0.6s;">
+                <h3><i class="fas fa-wallet" style="color:var(--accent-purple);"></i> Loan Status</h3>
+                <div style="margin-top: 15px;">
+                    {% if pending_amount > 0 %}
+                    <div style="margin-bottom: 10px;">
+                        <div class="metric-label" style="text-align:left;">Pending Principal</div>
+                        <div style="font-size: 1.2rem; font-weight: 600;">₹{{ pending_amount }}</div>
+                    </div>
+                    <div>
+                        <div class="metric-label" style="text-align:left;">Interest Liability</div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: #ef4444;">₹{{ existing_interest }}</div>
+                    </div>
+                    {% else %}
+                    <div style="text-align:center; padding: 20px 0;">
+                        <i class="fas fa-check-circle"
+                            style="font-size: 3rem; color: #22c55e; margin-bottom: 10px;"></i>
+                        <p style="margin:0; font-weight: 500;">No existing liabilities</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- CHART -->
+            <div class="dashboard-item two-thirds animate-in" style="animation-delay: 0.7s;">
+                <h3><i class="fas fa-chart-area" style="color:var(--accent-cyan);"></i> Interest Projection</h3>
+                <div style="height: 300px; margin-top: 20px;">
+                    <canvas id="interestChart"></canvas>
+                </div>
+            </div>
+
+            <!-- ADVISORY -->
+            <div class="dashboard-item animate-in" style="animation-delay: 0.8s;">
+                <h3><i class="fas fa-lightbulb" style="color:#eab308;"></i> Smart Advisory</h3>
+                <div class="advisory-content" style="margin-top: 15px; font-size: 0.85rem; line-height: 1.5;">
+                    {% if rule_reasons %}
+                    <ul style="padding:0; margin:0;">
+                        {% for r in rule_reasons %}
+                        <li
+                            style="border-left: 3px solid #eab308; padding: 8px; margin-bottom: 8px; background: rgba(234,179,8,0.05);">
+                            {{ r }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p style="text-align:left;">{{ advisory }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- ALL OPTIONS TABLE -->
+            <div class="dashboard-item full-width animate-in" style="animation-delay: 0.9s;">
+                <h3 style="margin-bottom: 15px;"><i class="fas fa-list-ul"></i> Comprehensive Loan Options</h3>
+                <div style="overflow-x: auto;">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>RANK</th>
+                                <th>LOAN PRODUCT</th>
+                                <th>BANK</th>
+                                <th>AMOUNT</th>
+                                <th>MATCH</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if loans %}
+                            {% for loan in loans %}
+                            <tr>
+                                <td><span
+                                        style="display:inline-block; width:24px; height:24px; background:{% if loop.index == 1 %}#ffd700{% elif loop.index == 2 %}#c0c0c0{% elif loop.index == 3 %}#cd7f32{% else %}#e2e8f0{% endif %}; border-radius:50%; text-align:center; line-height:24px; color:white; font-size:0.7rem; font-weight:bold;">{{
+                                        loop.index }}</span></td>
+                                <td style="font-weight: 500;">{{ loan.loan_name }}</td>
+                                <td>{{ loan.bank }}</td>
+                                <td style="font-weight: 600;">₹{{ loan.eligible_amount }}</td>
+                                <td>
+                                    <div
+                                        style="width: 100px; background: #e2e8f0; height: 6px; border-radius: 3px; position:relative;">
+                                        <div
+                                            style="position:absolute; height:100%; width:{{ loan.score }}%; background: var(--accent-blue); border-radius:3px;">
+                                        </div>
+                                    </div>
+                                    <span style="font-size: 0.7rem;">{{ loan.score }}%</span>
+                                </td>
+                                <td><button
+                                        style="margin:0; padding: 6px 12px; font-size: 0.75rem; border-radius: 8px;">Apply</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 30px;">No loan options available.
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('home') }}" class="btn-secondary"
+                style="display:inline-block; border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 12px;">
+                <i class="fas fa-redo-alt"></i> Run New Analysis
+            </a>
+        </div>
+
     </div>
 
-    <!-- ADVISORY -->
-    <div class="loan-card">
-        <h3>Advisory Summary</h3>
-        {% if reasons %}
-        <ul class="advisory-list" style="margin-top:12px; line-height:1.6;">
-            {% for r in reasons %}
-            <li>{{ r }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>{{ advisory }}</p>
-        {% endif %}
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const years = {{ interest_years| tojson }};
+        const newSeries = {{ new_interest_series| tojson }};
+        const existingSeries = {{ existing_interest_series| tojson }};
 
-    <a href="{{ url_for('home') }}">← Start New Analysis</a>
+        const ctx = document.getElementById('interestChart').getContext('2d');
 
-</div>
-</div>
+        // Create gradients
+        const gradientNew = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientNew.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
+        gradientNew.addColorStop(1, 'rgba(37, 99, 235, 0)');
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const years = {{ interest_years|tojson }};
-    const newSeries = {{ new_interest_series|tojson }};
-    const existingSeries = {{ existing_interest_series|tojson }};
+        const gradientExisting = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientExisting.addColorStop(0, 'rgba(239, 68, 68, 0.1)');
+        gradientExisting.addColorStop(1, 'rgba(239, 68, 68, 0)');
 
-    const ctx = document.getElementById('interestChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: years.map(y => y + 'y'),
-            datasets: [
-                {
-                    label: 'New Loan (cumulative interest)',
-                    data: newSeries,
-                    borderColor: '#00eaff',
-                    backgroundColor: 'rgba(0,234,255,0.08)',
-                    tension: 0.25,
-                    fill: true
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years.map(y => y + 'y'),
+                datasets: [
+                    {
+                        label: 'New Loan',
+                        data: newSeries,
+                        borderColor: '#2563eb',
+                        backgroundColor: gradientNew,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#2563eb',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Existing Loan',
+                        data: existingSeries,
+                        borderColor: '#ef4444',
+                        backgroundColor: gradientExisting,
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointBackgroundColor: '#ef4444',
+                        pointRadius: 0,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { size: 12, weight: '500' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#0f172a',
+                        bodyColor: '#334155',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function (context) {
+                                return context.dataset.label + ': ₹' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
                 },
-                {
-                    label: 'Existing Loan (cumulative interest)',
-                    data: existingSeries,
-                    borderColor: '#f43f5e',
-                    backgroundColor: 'rgba(244,63,94,0.06)',
-                    tension: 0.25,
-                    fill: true
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            callback: function (value) { return '₹' + value.toLocaleString(); }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true }
             }
-        }
-    });
-</script>
-    
+        });
+    </script>
 
 </body>
+
 </html>

@@ -1,101 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>LoanLens | Loan Purpose</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINSENSE | Loan Purpose</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-
-    <style>
-        .loan-options {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .loan-card-btn {
-            width: 100%;
-            padding: 18px;
-            border-radius: 18px;
-            background: rgba(20, 20, 55, 0.75);
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            color: inherit;
-        }
-
-        .loan-card-btn:hover {
-            transform: translateY(-3px) scale(1.01);
-            box-shadow:
-                0 12px 30px rgba(79, 140, 255, 0.4),
-                0 0 18px rgba(0, 234, 255, 0.35);
-        }
-
-        .loan-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #00eaff;
-            margin-bottom: 6px;
-        }
-
-        .loan-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        form {
-            margin: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Select Loan Purpose</h2>
-    <p>
-        Choose the type of loan you want to apply for.<br>
-        Simple, direct, and transparent.
-    </p>
+    <div class="container glass-heavy animate-in" style="max-width: 650px;">
 
-    <div class="loan-options">
+        <!-- STEPPER -->
+        <div class="stepper">
+            <div class="step completed"><i class="fas fa-check"></i></div>
+            <div class="step active">2</div>
+            <div class="step">3</div>
+            <div class="step">4</div>
+        </div>
 
-        <!-- HOME LOAN -->
-        <form action="{{ url_for('home_loan') }}" method="get">
-            <button type="submit" class="loan-card-btn">
-                <div class="loan-title">🏠 Home Loan</div>
-                <div class="loan-desc">
-                    Choose this if you’re planning to buy, build, or renovate a home.
-                </div>
-            </button>
-        </form>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="margin: 0 0 10px 0;">Select Loan Purpose</h2>
+            <p style="margin: 0;">Specify your requirement to filter the best matching portfolios.</p>
+        </div>
 
-        <!-- EDUCATION LOAN -->
-        <form action="{{ url_for('education_loan') }}" method="get">
-            <button type="submit" class="loan-card-btn">
-                <div class="loan-title">🎓 Education Loan</div>
-                <div class="loan-desc">
-                    Choose this if you’re funding higher studies in India or abroad.
-                </div>
-            </button>
-        </form>
+        <div class="purpose-grid">
 
-        <!-- PERSONAL LOAN -->
-        <form action="{{ url_for('personal_loan') }}" method="get">
-            <button type="submit" class="loan-card-btn">
-                <div class="loan-title">💳 Personal Loan</div>
-                <div class="loan-desc">
-                    Choose this for personal expenses, emergencies, or short-term needs.
-                </div>
-            </button>
-        </form>
+            <!-- HOME LOAN -->
+            <form action="{{ url_for('home_loan') }}" method="get">
+                <button type="submit" class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="purpose-info">
+                        <h4>Home Loan</h4>
+                        <p>Financing for purchasing, building, or renovating your dream property.</p>
+                    </div>
+                </button>
+            </form>
+
+            <!-- EDUCATION LOAN -->
+            <form action="{{ url_for('education_loan') }}" method="get">
+                <button type="submit" class="purpose-card">
+                    <div class="purpose-icon"
+                        style="background: rgba(109, 40, 217, 0.08); color: var(--accent-purple);">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="purpose-info">
+                        <h4>Education Loan</h4>
+                        <p>Invest in your future with competitive funding for higher studies.</p>
+                    </div>
+                </button>
+            </form>
+
+            <!-- PERSONAL LOAN -->
+            <form action="{{ url_for('personal_loan') }}" method="get">
+                <button type="submit" class="purpose-card">
+                    <div class="purpose-icon" style="background: rgba(8, 145, 178, 0.08); color: var(--accent-cyan);">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="purpose-info">
+                        <h4>Personal Loan</h4>
+                        <p>Flexible credit for emergencies, appliances, or short-term travel needs.</p>
+                    </div>
+                </button>
+            </form>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('personal_details') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Profile
+            </a>
+        </div>
 
     </div>
 
-    <a href="{{ url_for('personal_details') }}">← Back</a>
-    
-</div>
-
 </body>
+
 </html>

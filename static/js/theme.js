@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    const saved = localStorage.getItem('loanlens_theme') || 'light';
+    const saved = localStorage.getItem('finsense_theme') || 'light';
     applyTheme(saved);
 
     if (toggle) {
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const current = root.classList.contains('theme-light') ? 'light' : 'dark';
             const next = current === 'light' ? 'dark' : 'light';
             applyTheme(next);
-            localStorage.setItem('loanlens_theme', next);
+            localStorage.setItem('finsense_theme', next);
             // update button text/icon
             toggle.innerText = next === 'light' ? '🌙 Dark' : '☀️ Light';
         });
