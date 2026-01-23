@@ -193,14 +193,21 @@ def recommend_loans(user_profile, risk_level):
             shift = bank_shifts[idx % len(bank_shifts)]
             adj_approval = max(0.0, min(1.0, float(approval_prob) + shift))
 
-            # Prefer using dataset product amounts for the bank if available,
-            # otherwise fall back to the heuristic eligible amount based on requested.
+            # ✅ FIXED LOGIC: Prioritize User Request
             eligible_adj = 0
-            if dataset_amounts is not None:
-                # determine bank column name
+            
+            if requested > 0:
+                # Base it on what the user asked for, with small variation
+                # This ensures the suggestion matches their need
+                base_amt = requested
+                eligible_adj = max(0, int(round(base_amt * (1 + shift))))
+                
+            elif dataset_amounts is not None:
+                # Fallback to dataset median ONLY if request is invalid/zero
                 bank_col = "bank_name" if "bank_name" in dataset_amounts.columns else (
                     "bank" if "bank" in dataset_amounts.columns else None)
                 amt_col = "loan_amount"
+                
                 if bank_col in dataset_amounts.columns and amt_col in dataset_amounts.columns:
                     # pick a central tendency (median) of amounts for this bank
                     bank_amt_series = dataset_amounts[dataset_amounts[bank_col].astype(
@@ -216,12 +223,9 @@ def recommend_loans(user_profile, risk_level):
                 else:
                     eligible_adj = 0
             else:
-                # fallback: small variance around heuristic eligible
-                if requested > 0:
-                    eligible_adj = max(
-                        0, int(min(requested, round(eligible * (1 + shift)))))
-                else:
-                    eligible_adj = 0
+                 # Last resort fallback if no data and no request (unlikely)
+                 eligible_adj = 500000 
+
 
             adj_final_score = (
                 adj_approval * 70 +
